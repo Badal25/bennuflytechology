@@ -108,7 +108,7 @@ function DashboardPage() {
                 </div>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={leadsSeries.data}>
+                  <AreaChart data={leadsSeries.data ?? []}>
                     <defs>
                       <linearGradient id="leadsFill" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
@@ -141,7 +141,7 @@ function DashboardPage() {
                 </div>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={appsSeries.data}>
+                  <BarChart data={appsSeries.data ?? []}>
                     <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
                     <XAxis dataKey="date" fontSize={11} interval={5} />
                     <YAxis fontSize={11} allowDecimals={false} />
