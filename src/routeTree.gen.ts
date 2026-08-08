@@ -16,6 +16,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CareersRouteImport } from './routes/careers'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as IndustriesRouteImport } from './routes/industries'
+import { Route as LearningRouteImport } from './routes/learning'
 import { Route as ProcessRouteImport } from './routes/process'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TechnologiesRouteImport } from './routes/technologies'
@@ -57,6 +58,11 @@ const FaqRoute = FaqRouteImport.update({
 const IndustriesRoute = IndustriesRouteImport.update({
   id: '/industries',
   path: '/industries',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearningRoute = LearningRouteImport.update({
+  id: '/learning',
+  path: '/learning',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProcessRoute = ProcessRouteImport.update({
@@ -107,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/careers': typeof CareersRoute
   '/faq': typeof FaqRoute
   '/industries': typeof IndustriesRoute
+  '/learning': typeof LearningRoute
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
   '/technologies': typeof TechnologiesRoute
@@ -123,6 +130,7 @@ export interface FileRoutesByTo {
   '/careers': typeof CareersRoute
   '/faq': typeof FaqRoute
   '/industries': typeof IndustriesRoute
+  '/learning': typeof LearningRoute
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
   '/technologies': typeof TechnologiesRoute
@@ -141,6 +149,7 @@ export interface FileRoutesById {
   '/careers': typeof CareersRoute
   '/faq': typeof FaqRoute
   '/industries': typeof IndustriesRoute
+  '/learning': typeof LearningRoute
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
   '/technologies': typeof TechnologiesRoute
@@ -159,6 +168,7 @@ export interface FileRouteTypes {
     | '/careers'
     | '/faq'
     | '/industries'
+    | '/learning'
     | '/process'
     | '/reset-password'
     | '/technologies'
@@ -175,6 +185,7 @@ export interface FileRouteTypes {
     | '/careers'
     | '/faq'
     | '/industries'
+    | '/learning'
     | '/process'
     | '/reset-password'
     | '/technologies'
@@ -192,6 +203,7 @@ export interface FileRouteTypes {
     | '/careers'
     | '/faq'
     | '/industries'
+    | '/learning'
     | '/process'
     | '/reset-password'
     | '/technologies'
@@ -210,6 +222,7 @@ export interface RootRouteChildren {
   CareersRoute: typeof CareersRoute
   FaqRoute: typeof FaqRoute
   IndustriesRoute: typeof IndustriesRoute
+  LearningRoute: typeof LearningRoute
   ProcessRoute: typeof ProcessRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   TechnologiesRoute: typeof TechnologiesRoute
@@ -268,6 +281,13 @@ declare module '@tanstack/react-router' {
       path: '/industries'
       fullPath: '/industries'
       preLoaderRoute: typeof IndustriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learning': {
+      id: '/learning'
+      path: '/learning'
+      fullPath: '/learning'
+      preLoaderRoute: typeof LearningRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/process': {
@@ -348,6 +368,7 @@ const rootRouteChildren: RootRouteChildren = {
   CareersRoute: CareersRoute,
   FaqRoute: FaqRoute,
   IndustriesRoute: IndustriesRoute,
+  LearningRoute: LearningRoute,
   ProcessRoute: ProcessRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   TechnologiesRoute: TechnologiesRoute,
