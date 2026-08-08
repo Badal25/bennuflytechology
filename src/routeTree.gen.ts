@@ -21,6 +21,7 @@ import { Route as ProcessRouteImport } from './routes/process'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TechnologiesRouteImport } from './routes/technologies'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as PortfolioIndexRouteImport } from './routes/portfolio.index'
 import { Route as PortfolioSlugRouteImport } from './routes/portfolio.$slug'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
@@ -86,6 +87,11 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
   path: '/blog/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PortfolioIndexRoute = PortfolioIndexRouteImport.update({
   id: '/portfolio/',
   path: '/portfolio/',
@@ -123,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
   '/technologies': typeof TechnologiesRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/blog/': typeof BlogIndexRoute
@@ -141,6 +148,7 @@ export interface FileRoutesByTo {
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
   '/technologies': typeof TechnologiesRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/blog': typeof BlogIndexRoute
@@ -161,6 +169,7 @@ export interface FileRoutesById {
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
   '/technologies': typeof TechnologiesRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/blog/': typeof BlogIndexRoute
@@ -181,6 +190,7 @@ export interface FileRouteTypes {
     | '/process'
     | '/reset-password'
     | '/technologies'
+    | '/blog/$slug'
     | '/portfolio/$slug'
     | '/services/$slug'
     | '/blog/'
@@ -199,6 +209,7 @@ export interface FileRouteTypes {
     | '/process'
     | '/reset-password'
     | '/technologies'
+    | '/blog/$slug'
     | '/portfolio/$slug'
     | '/services/$slug'
     | '/blog'
@@ -218,6 +229,7 @@ export interface FileRouteTypes {
     | '/process'
     | '/reset-password'
     | '/technologies'
+    | '/blog/$slug'
     | '/portfolio/$slug'
     | '/services/$slug'
     | '/blog/'
@@ -238,6 +250,7 @@ export interface RootRouteChildren {
   ProcessRoute: typeof ProcessRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   TechnologiesRoute: typeof TechnologiesRoute
+  BlogSlugRoute: typeof BlogSlugRoute
   PortfolioSlugRoute: typeof PortfolioSlugRoute
   ServicesSlugRoute: typeof ServicesSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
@@ -331,6 +344,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/portfolio/': {
       id: '/portfolio/'
       path: '/portfolio'
@@ -392,6 +412,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProcessRoute: ProcessRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   TechnologiesRoute: TechnologiesRoute,
+  BlogSlugRoute: BlogSlugRoute,
   PortfolioSlugRoute: PortfolioSlugRoute,
   ServicesSlugRoute: ServicesSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
