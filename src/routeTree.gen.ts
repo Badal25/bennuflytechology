@@ -23,6 +23,7 @@ import { Route as ProcessRouteImport } from './routes/process'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as StartProjectRouteImport } from './routes/start-project'
 import { Route as TechnologiesRouteImport } from './routes/technologies'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as PortfolioIndexRouteImport } from './routes/portfolio.index'
@@ -100,6 +101,11 @@ const TechnologiesRoute = TechnologiesRouteImport.update({
   path: '/technologies',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/blog/',
   path: '/blog/',
@@ -150,6 +156,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/start-project': typeof StartProjectRoute
   '/technologies': typeof TechnologiesRoute
+  '/terms': typeof TermsRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
@@ -172,6 +179,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/start-project': typeof StartProjectRoute
   '/technologies': typeof TechnologiesRoute
+  '/terms': typeof TermsRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
@@ -196,6 +204,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/start-project': typeof StartProjectRoute
   '/technologies': typeof TechnologiesRoute
+  '/terms': typeof TermsRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
@@ -220,6 +229,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/start-project'
     | '/technologies'
+    | '/terms'
     | '/blog/$slug'
     | '/portfolio/$slug'
     | '/services/$slug'
@@ -242,6 +252,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/start-project'
     | '/technologies'
+    | '/terms'
     | '/blog/$slug'
     | '/portfolio/$slug'
     | '/services/$slug'
@@ -265,6 +276,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/start-project'
     | '/technologies'
+    | '/terms'
     | '/blog/$slug'
     | '/portfolio/$slug'
     | '/services/$slug'
@@ -289,6 +301,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   StartProjectRoute: typeof StartProjectRoute
   TechnologiesRoute: typeof TechnologiesRoute
+  TermsRoute: typeof TermsRoute
   BlogSlugRoute: typeof BlogSlugRoute
   PortfolioSlugRoute: typeof PortfolioSlugRoute
   ServicesSlugRoute: typeof ServicesSlugRoute
@@ -397,6 +410,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TechnologiesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog/': {
       id: '/blog/'
       path: '/blog'
@@ -475,6 +495,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   StartProjectRoute: StartProjectRoute,
   TechnologiesRoute: TechnologiesRoute,
+  TermsRoute: TermsRoute,
   BlogSlugRoute: BlogSlugRoute,
   PortfolioSlugRoute: PortfolioSlugRoute,
   ServicesSlugRoute: ServicesSlugRoute,
