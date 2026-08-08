@@ -19,6 +19,7 @@ import { Route as ProcessRouteImport } from './routes/process'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TechnologiesRouteImport } from './routes/technologies'
 import { Route as PortfolioIndexRouteImport } from './routes/portfolio.index'
+import { Route as PortfolioSlugRouteImport } from './routes/portfolio.$slug'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
 import { Route as ServicesSlugRouteImport } from './routes/services.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
@@ -72,6 +73,11 @@ const PortfolioIndexRoute = PortfolioIndexRouteImport.update({
   path: '/portfolio/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PortfolioSlugRoute = PortfolioSlugRouteImport.update({
+  id: '/portfolio/$slug',
+  path: '/portfolio/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicesIndexRoute = ServicesIndexRouteImport.update({
   id: '/services/',
   path: '/services/',
@@ -97,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
   '/technologies': typeof TechnologiesRoute
+  '/portfolio/$slug': typeof PortfolioSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/portfolio/': typeof PortfolioIndexRoute
   '/services/': typeof ServicesIndexRoute
@@ -111,6 +118,7 @@ export interface FileRoutesByTo {
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
   '/technologies': typeof TechnologiesRoute
+  '/portfolio/$slug': typeof PortfolioSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/portfolio': typeof PortfolioIndexRoute
   '/services': typeof ServicesIndexRoute
@@ -127,6 +135,7 @@ export interface FileRoutesById {
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
   '/technologies': typeof TechnologiesRoute
+  '/portfolio/$slug': typeof PortfolioSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/portfolio/': typeof PortfolioIndexRoute
   '/services/': typeof ServicesIndexRoute
@@ -143,6 +152,7 @@ export interface FileRouteTypes {
     | '/process'
     | '/reset-password'
     | '/technologies'
+    | '/portfolio/$slug'
     | '/services/$slug'
     | '/portfolio/'
     | '/services/'
@@ -157,6 +167,7 @@ export interface FileRouteTypes {
     | '/process'
     | '/reset-password'
     | '/technologies'
+    | '/portfolio/$slug'
     | '/services/$slug'
     | '/portfolio'
     | '/services'
@@ -172,6 +183,7 @@ export interface FileRouteTypes {
     | '/process'
     | '/reset-password'
     | '/technologies'
+    | '/portfolio/$slug'
     | '/services/$slug'
     | '/portfolio/'
     | '/services/'
@@ -188,6 +200,7 @@ export interface RootRouteChildren {
   ProcessRoute: typeof ProcessRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   TechnologiesRoute: typeof TechnologiesRoute
+  PortfolioSlugRoute: typeof PortfolioSlugRoute
   ServicesSlugRoute: typeof ServicesSlugRoute
   PortfolioIndexRoute: typeof PortfolioIndexRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
@@ -265,6 +278,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortfolioIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/portfolio/$slug': {
+      id: '/portfolio/$slug'
+      path: '/portfolio/$slug'
+      fullPath: '/portfolio/$slug'
+      preLoaderRoute: typeof PortfolioSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/services/': {
       id: '/services/'
       path: '/services'
@@ -310,6 +330,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProcessRoute: ProcessRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   TechnologiesRoute: TechnologiesRoute,
+  PortfolioSlugRoute: PortfolioSlugRoute,
   ServicesSlugRoute: ServicesSlugRoute,
   PortfolioIndexRoute: PortfolioIndexRoute,
   ServicesIndexRoute: ServicesIndexRoute,
