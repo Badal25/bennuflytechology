@@ -193,7 +193,7 @@ export function AdminShell({
               <button className="flex items-center gap-2 rounded-full">
                 <Avatar className="size-9">
                   <AvatarFallback className="bg-primary/15 text-primary">
-                    {initialsOf(user?.user_metadata?.full_name, user?.email)}
+                    {initialsOf(user?.user_metadata?.["full_name"], user?.email)}
                   </AvatarFallback>
                 </Avatar>
               </button>

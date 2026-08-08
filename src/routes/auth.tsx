@@ -45,13 +45,13 @@ function AuthPage() {
   function validate() {
     const next: Record<string, string> = {};
     const e = emailSchema.safeParse(email);
-    if (!e.success) next.email = e.error.issues[0]?.message ?? "Invalid email";
+    if (!e.success) next["email"] = e.error.issues[0]?.message ?? "Invalid email";
     if (mode !== "forgot") {
       const p = passwordSchema.safeParse(password);
-      if (!p.success) next.password = p.error.issues[0]?.message ?? "Invalid password";
+      if (!p.success) next["password"] = p.error.issues[0]?.message ?? "Invalid password";
     }
     if (mode === "signup" && fullName.trim().length < 2) {
-      next.fullName = "Enter your full name";
+      next["fullName"] = "Enter your full name";
     }
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -132,7 +132,7 @@ function AuthPage() {
               <div className="space-y-1.5">
                 <Label htmlFor="fullName">Full name</Label>
                 <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Jane Doe" />
-                {errors.fullName && <p className="text-xs text-destructive">{errors.fullName}</p>}
+                {errors["fullName"] && <p className="text-xs text-destructive">{errors["fullName"]}</p>}
               </div>
             )}
             <div className="space-y-1.5">
@@ -148,7 +148,7 @@ function AuthPage() {
                   className="pl-9"
                 />
               </div>
-              {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
+              {errors["email"] && <p className="text-xs text-destructive">{errors["email"]}</p>}
             </div>
             {mode !== "forgot" && (
               <div className="space-y-1.5">
@@ -164,7 +164,7 @@ function AuthPage() {
                     className="pl-9"
                   />
                 </div>
-                {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
+                {errors["password"] && <p className="text-xs text-destructive">{errors["password"]}</p>}
               </div>
             )}
 

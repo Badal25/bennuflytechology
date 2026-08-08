@@ -13,11 +13,21 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CareersRouteImport } from './routes/careers'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as IndustriesRouteImport } from './routes/industries'
+import { Route as LearningRouteImport } from './routes/learning'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProcessRouteImport } from './routes/process'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as StartProjectRouteImport } from './routes/start-project'
 import { Route as TechnologiesRouteImport } from './routes/technologies'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as PortfolioIndexRouteImport } from './routes/portfolio.index'
+import { Route as PortfolioSlugRouteImport } from './routes/portfolio.$slug'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
 import { Route as ServicesSlugRouteImport } from './routes/services.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
@@ -41,6 +51,16 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CareersRoute = CareersRouteImport.update({
+  id: '/careers',
+  path: '/careers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
@@ -49,6 +69,16 @@ const FaqRoute = FaqRouteImport.update({
 const IndustriesRoute = IndustriesRouteImport.update({
   id: '/industries',
   path: '/industries',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearningRoute = LearningRouteImport.update({
+  id: '/learning',
+  path: '/learning',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProcessRoute = ProcessRouteImport.update({
@@ -61,9 +91,39 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StartProjectRoute = StartProjectRouteImport.update({
+  id: '/start-project',
+  path: '/start-project',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TechnologiesRoute = TechnologiesRouteImport.update({
   id: '/technologies',
   path: '/technologies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortfolioIndexRoute = PortfolioIndexRouteImport.update({
+  id: '/portfolio/',
+  path: '/portfolio/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortfolioSlugRoute = PortfolioSlugRouteImport.update({
+  id: '/portfolio/$slug',
+  path: '/portfolio/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicesIndexRoute = ServicesIndexRouteImport.update({
@@ -86,12 +146,22 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
+  '/careers': typeof CareersRoute
+  '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/industries': typeof IndustriesRoute
+  '/learning': typeof LearningRoute
+  '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/start-project': typeof StartProjectRoute
   '/technologies': typeof TechnologiesRoute
+  '/terms': typeof TermsRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/portfolio/$slug': typeof PortfolioSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
+  '/blog/': typeof BlogIndexRoute
+  '/portfolio/': typeof PortfolioIndexRoute
   '/services/': typeof ServicesIndexRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
 }
@@ -99,12 +169,22 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
+  '/careers': typeof CareersRoute
+  '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/industries': typeof IndustriesRoute
+  '/learning': typeof LearningRoute
+  '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/start-project': typeof StartProjectRoute
   '/technologies': typeof TechnologiesRoute
+  '/terms': typeof TermsRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/portfolio/$slug': typeof PortfolioSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
+  '/blog': typeof BlogIndexRoute
+  '/portfolio': typeof PortfolioIndexRoute
   '/services': typeof ServicesIndexRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
 }
@@ -114,12 +194,22 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
+  '/careers': typeof CareersRoute
+  '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/industries': typeof IndustriesRoute
+  '/learning': typeof LearningRoute
+  '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/start-project': typeof StartProjectRoute
   '/technologies': typeof TechnologiesRoute
+  '/terms': typeof TermsRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/portfolio/$slug': typeof PortfolioSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
+  '/blog/': typeof BlogIndexRoute
+  '/portfolio/': typeof PortfolioIndexRoute
   '/services/': typeof ServicesIndexRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
@@ -129,12 +219,22 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/auth'
+    | '/careers'
+    | '/contact'
     | '/faq'
     | '/industries'
+    | '/learning'
+    | '/privacy'
     | '/process'
     | '/reset-password'
+    | '/start-project'
     | '/technologies'
+    | '/terms'
+    | '/blog/$slug'
+    | '/portfolio/$slug'
     | '/services/$slug'
+    | '/blog/'
+    | '/portfolio/'
     | '/services/'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
@@ -142,12 +242,22 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/auth'
+    | '/careers'
+    | '/contact'
     | '/faq'
     | '/industries'
+    | '/learning'
+    | '/privacy'
     | '/process'
     | '/reset-password'
+    | '/start-project'
     | '/technologies'
+    | '/terms'
+    | '/blog/$slug'
+    | '/portfolio/$slug'
     | '/services/$slug'
+    | '/blog'
+    | '/portfolio'
     | '/services'
     | '/admin'
   id:
@@ -156,12 +266,22 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/about'
     | '/auth'
+    | '/careers'
+    | '/contact'
     | '/faq'
     | '/industries'
+    | '/learning'
+    | '/privacy'
     | '/process'
     | '/reset-password'
+    | '/start-project'
     | '/technologies'
+    | '/terms'
+    | '/blog/$slug'
+    | '/portfolio/$slug'
     | '/services/$slug'
+    | '/blog/'
+    | '/portfolio/'
     | '/services/'
     | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
@@ -171,12 +291,22 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
   AuthRoute: typeof AuthRoute
+  CareersRoute: typeof CareersRoute
+  ContactRoute: typeof ContactRoute
   FaqRoute: typeof FaqRoute
   IndustriesRoute: typeof IndustriesRoute
+  LearningRoute: typeof LearningRoute
+  PrivacyRoute: typeof PrivacyRoute
   ProcessRoute: typeof ProcessRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  StartProjectRoute: typeof StartProjectRoute
   TechnologiesRoute: typeof TechnologiesRoute
+  TermsRoute: typeof TermsRoute
+  BlogSlugRoute: typeof BlogSlugRoute
+  PortfolioSlugRoute: typeof PortfolioSlugRoute
   ServicesSlugRoute: typeof ServicesSlugRoute
+  BlogIndexRoute: typeof BlogIndexRoute
+  PortfolioIndexRoute: typeof PortfolioIndexRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
 }
 
@@ -210,6 +340,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/careers': {
+      id: '/careers'
+      path: '/careers'
+      fullPath: '/careers'
+      preLoaderRoute: typeof CareersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/faq': {
       id: '/faq'
       path: '/faq'
@@ -222,6 +366,20 @@ declare module '@tanstack/react-router' {
       path: '/industries'
       fullPath: '/industries'
       preLoaderRoute: typeof IndustriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learning': {
+      id: '/learning'
+      path: '/learning'
+      fullPath: '/learning'
+      preLoaderRoute: typeof LearningRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/process': {
@@ -238,11 +396,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/start-project': {
+      id: '/start-project'
+      path: '/start-project'
+      fullPath: '/start-project'
+      preLoaderRoute: typeof StartProjectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/technologies': {
       id: '/technologies'
       path: '/technologies'
       fullPath: '/technologies'
       preLoaderRoute: typeof TechnologiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portfolio/': {
+      id: '/portfolio/'
+      path: '/portfolio'
+      fullPath: '/portfolio/'
+      preLoaderRoute: typeof PortfolioIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portfolio/$slug': {
+      id: '/portfolio/$slug'
+      path: '/portfolio/$slug'
+      fullPath: '/portfolio/$slug'
+      preLoaderRoute: typeof PortfolioSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/services/': {
@@ -285,12 +485,22 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
   AuthRoute: AuthRoute,
+  CareersRoute: CareersRoute,
+  ContactRoute: ContactRoute,
   FaqRoute: FaqRoute,
   IndustriesRoute: IndustriesRoute,
+  LearningRoute: LearningRoute,
+  PrivacyRoute: PrivacyRoute,
   ProcessRoute: ProcessRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  StartProjectRoute: StartProjectRoute,
   TechnologiesRoute: TechnologiesRoute,
+  TermsRoute: TermsRoute,
+  BlogSlugRoute: BlogSlugRoute,
+  PortfolioSlugRoute: PortfolioSlugRoute,
   ServicesSlugRoute: ServicesSlugRoute,
+  BlogIndexRoute: BlogIndexRoute,
+  PortfolioIndexRoute: PortfolioIndexRoute,
   ServicesIndexRoute: ServicesIndexRoute,
 }
 export const routeTree = rootRouteImport

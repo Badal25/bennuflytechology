@@ -105,13 +105,13 @@ export function SimpleCrudPage({ config }: { config: CrudConfig }) {
     }
     if (config.hasSlug) {
       const source = config.slugSource ? form[config.slugSource] : form[config.titleKey];
-      payload.slug = editing?.slug ?? slugify(String(source ?? ""));
+      payload["slug"] = editing?.["slug"] ?? slugify(String(source ?? ""));
     }
     try {
       if (editing) {
         await update({ id: editing.id, values: payload });
       } else {
-        if (config.hasStatus) payload.status = payload.status || "draft";
+        if (config.hasStatus) payload["status"] = payload["status"] || "draft";
         await create(payload);
       }
       setDialogOpen(false);
