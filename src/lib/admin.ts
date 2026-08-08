@@ -27,7 +27,7 @@ export async function logAudit(action: string, module: string, recordId: string 
  */
 export function useResource<T extends TableName>(
   table: T,
-  opts?: { orderBy?: string; ascending?: boolean; select?: string },
+  opts?: { orderBy?: string | undefined; ascending?: boolean | undefined; select?: string | undefined },
 ) {
   const queryClient = useQueryClient();
   const key = [table] as const;

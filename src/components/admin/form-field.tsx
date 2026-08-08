@@ -9,10 +9,10 @@ export function FormField({
   required,
 }: {
   label: string;
-  htmlFor?: string;
-  hint?: string;
+  htmlFor?: string | undefined;
+  hint?: string | undefined;
   children: ReactNode;
-  required?: boolean;
+  required?: boolean | undefined;
 }) {
   return (
     <div className="space-y-1.5">
