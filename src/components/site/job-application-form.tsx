@@ -69,7 +69,7 @@ export function JobApplicationForm({ job, onDone }: { job: Job; onDone?: () => v
         const path = `${crypto.randomUUID()}.${ext}`;
         const { error: upErr } = await supabase.storage
           .from("resumes")
-          .upload(path, file, { upsert: false, contentType: file.type || undefined });
+          .upload(path, file, { upsert: false, contentType: file.type || "application/octet-stream" });
         if (upErr) throw upErr;
         resumePath = path;
       }
