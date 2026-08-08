@@ -63,7 +63,11 @@ export function useResource<T extends TableName>(
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, values }: { id: string; values: any }) => {
-      const { data, error } = await supabase.from(table).update(values).eq("id", id).select().single();
+      const { data, error } = await (supabase.from(table) as any)
+        .update(values)
+        .eq("id", id)
+        .select()
+        .single();
       if (error) throw new Error(error.message);
       return data;
     },
@@ -77,7 +81,7 @@ export function useResource<T extends TableName>(
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from(table).delete().eq("id", id);
+      const { error } = await (supabase.from(table) as any).delete().eq("id", id);
       if (error) throw new Error(error.message);
       return id;
     },
