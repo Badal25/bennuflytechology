@@ -20,6 +20,7 @@ import { Route as IndustriesRouteImport } from './routes/industries'
 import { Route as LearningRouteImport } from './routes/learning'
 import { Route as ProcessRouteImport } from './routes/process'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as StartProjectRouteImport } from './routes/start-project'
 import { Route as TechnologiesRouteImport } from './routes/technologies'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
@@ -83,6 +84,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StartProjectRoute = StartProjectRouteImport.update({
+  id: '/start-project',
+  path: '/start-project',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TechnologiesRoute = TechnologiesRouteImport.update({
   id: '/technologies',
   path: '/technologies',
@@ -135,6 +141,7 @@ export interface FileRoutesByFullPath {
   '/learning': typeof LearningRoute
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/start-project': typeof StartProjectRoute
   '/technologies': typeof TechnologiesRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
@@ -155,6 +162,7 @@ export interface FileRoutesByTo {
   '/learning': typeof LearningRoute
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/start-project': typeof StartProjectRoute
   '/technologies': typeof TechnologiesRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
@@ -177,6 +185,7 @@ export interface FileRoutesById {
   '/learning': typeof LearningRoute
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/start-project': typeof StartProjectRoute
   '/technologies': typeof TechnologiesRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
@@ -199,6 +208,7 @@ export interface FileRouteTypes {
     | '/learning'
     | '/process'
     | '/reset-password'
+    | '/start-project'
     | '/technologies'
     | '/blog/$slug'
     | '/portfolio/$slug'
@@ -219,6 +229,7 @@ export interface FileRouteTypes {
     | '/learning'
     | '/process'
     | '/reset-password'
+    | '/start-project'
     | '/technologies'
     | '/blog/$slug'
     | '/portfolio/$slug'
@@ -240,6 +251,7 @@ export interface FileRouteTypes {
     | '/learning'
     | '/process'
     | '/reset-password'
+    | '/start-project'
     | '/technologies'
     | '/blog/$slug'
     | '/portfolio/$slug'
@@ -262,6 +274,7 @@ export interface RootRouteChildren {
   LearningRoute: typeof LearningRoute
   ProcessRoute: typeof ProcessRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  StartProjectRoute: typeof StartProjectRoute
   TechnologiesRoute: typeof TechnologiesRoute
   BlogSlugRoute: typeof BlogSlugRoute
   PortfolioSlugRoute: typeof PortfolioSlugRoute
@@ -350,6 +363,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/start-project': {
+      id: '/start-project'
+      path: '/start-project'
+      fullPath: '/start-project'
+      preLoaderRoute: typeof StartProjectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/technologies': {
       id: '/technologies'
       path: '/technologies'
@@ -432,6 +452,7 @@ const rootRouteChildren: RootRouteChildren = {
   LearningRoute: LearningRoute,
   ProcessRoute: ProcessRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  StartProjectRoute: StartProjectRoute,
   TechnologiesRoute: TechnologiesRoute,
   BlogSlugRoute: BlogSlugRoute,
   PortfolioSlugRoute: PortfolioSlugRoute,
