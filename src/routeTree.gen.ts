@@ -20,6 +20,7 @@ import { Route as LearningRouteImport } from './routes/learning'
 import { Route as ProcessRouteImport } from './routes/process'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TechnologiesRouteImport } from './routes/technologies'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as PortfolioIndexRouteImport } from './routes/portfolio.index'
 import { Route as PortfolioSlugRouteImport } from './routes/portfolio.$slug'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
@@ -80,6 +81,11 @@ const TechnologiesRoute = TechnologiesRouteImport.update({
   path: '/technologies',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PortfolioIndexRoute = PortfolioIndexRouteImport.update({
   id: '/portfolio/',
   path: '/portfolio/',
@@ -119,6 +125,7 @@ export interface FileRoutesByFullPath {
   '/technologies': typeof TechnologiesRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
+  '/blog/': typeof BlogIndexRoute
   '/portfolio/': typeof PortfolioIndexRoute
   '/services/': typeof ServicesIndexRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
@@ -136,6 +143,7 @@ export interface FileRoutesByTo {
   '/technologies': typeof TechnologiesRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
+  '/blog': typeof BlogIndexRoute
   '/portfolio': typeof PortfolioIndexRoute
   '/services': typeof ServicesIndexRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
@@ -155,6 +163,7 @@ export interface FileRoutesById {
   '/technologies': typeof TechnologiesRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
+  '/blog/': typeof BlogIndexRoute
   '/portfolio/': typeof PortfolioIndexRoute
   '/services/': typeof ServicesIndexRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
@@ -174,6 +183,7 @@ export interface FileRouteTypes {
     | '/technologies'
     | '/portfolio/$slug'
     | '/services/$slug'
+    | '/blog/'
     | '/portfolio/'
     | '/services/'
     | '/admin/'
@@ -191,6 +201,7 @@ export interface FileRouteTypes {
     | '/technologies'
     | '/portfolio/$slug'
     | '/services/$slug'
+    | '/blog'
     | '/portfolio'
     | '/services'
     | '/admin'
@@ -209,6 +220,7 @@ export interface FileRouteTypes {
     | '/technologies'
     | '/portfolio/$slug'
     | '/services/$slug'
+    | '/blog/'
     | '/portfolio/'
     | '/services/'
     | '/_authenticated/admin/'
@@ -228,6 +240,7 @@ export interface RootRouteChildren {
   TechnologiesRoute: typeof TechnologiesRoute
   PortfolioSlugRoute: typeof PortfolioSlugRoute
   ServicesSlugRoute: typeof ServicesSlugRoute
+  BlogIndexRoute: typeof BlogIndexRoute
   PortfolioIndexRoute: typeof PortfolioIndexRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
 }
@@ -311,6 +324,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TechnologiesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/portfolio/': {
       id: '/portfolio/'
       path: '/portfolio'
@@ -374,6 +394,7 @@ const rootRouteChildren: RootRouteChildren = {
   TechnologiesRoute: TechnologiesRoute,
   PortfolioSlugRoute: PortfolioSlugRoute,
   ServicesSlugRoute: ServicesSlugRoute,
+  BlogIndexRoute: BlogIndexRoute,
   PortfolioIndexRoute: PortfolioIndexRoute,
   ServicesIndexRoute: ServicesIndexRoute,
 }
