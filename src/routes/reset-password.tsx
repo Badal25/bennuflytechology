@@ -46,7 +46,7 @@ function ResetPasswordPage() {
       const { error: updateError } = await supabase.auth.updateUser({ password });
       if (updateError) throw updateError;
       toast.success("Password updated. Please sign in.");
-      navigate({ to: "/auth" });
+      navigate({ to: "/admin/login" });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong");
     } finally {

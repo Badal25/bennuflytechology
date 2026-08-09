@@ -115,7 +115,7 @@ export function SiteFooter() {
             <Link to="/terms" className="hover:text-foreground">
               Terms &amp; Conditions
             </Link>
-            <Link to="/auth" className="hover:text-foreground">
+            <Link to="/admin/login" className="hover:text-foreground">
               Admin
             </Link>
           </div>
