@@ -25,6 +25,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as StartProjectRouteImport } from './routes/start-project'
 import { Route as TechnologiesRouteImport } from './routes/technologies'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as PortfolioIndexRouteImport } from './routes/portfolio.index'
@@ -112,6 +113,11 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin/login',
+  path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/blog/',
   path: '/blog/',
@@ -164,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/start-project': typeof StartProjectRoute
   '/technologies': typeof TechnologiesRoute
   '/terms': typeof TermsRoute
+  '/admin/login': typeof AdminLoginRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
@@ -188,6 +195,7 @@ export interface FileRoutesByTo {
   '/start-project': typeof StartProjectRoute
   '/technologies': typeof TechnologiesRoute
   '/terms': typeof TermsRoute
+  '/admin/login': typeof AdminLoginRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
@@ -214,6 +222,7 @@ export interface FileRoutesById {
   '/start-project': typeof StartProjectRoute
   '/technologies': typeof TechnologiesRoute
   '/terms': typeof TermsRoute
+  '/admin/login': typeof AdminLoginRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
@@ -240,6 +249,7 @@ export interface FileRouteTypes {
     | '/start-project'
     | '/technologies'
     | '/terms'
+    | '/admin/login'
     | '/blog/$slug'
     | '/portfolio/$slug'
     | '/services/$slug'
@@ -264,6 +274,7 @@ export interface FileRouteTypes {
     | '/start-project'
     | '/technologies'
     | '/terms'
+    | '/admin/login'
     | '/blog/$slug'
     | '/portfolio/$slug'
     | '/services/$slug'
@@ -289,6 +300,7 @@ export interface FileRouteTypes {
     | '/start-project'
     | '/technologies'
     | '/terms'
+    | '/admin/login'
     | '/blog/$slug'
     | '/portfolio/$slug'
     | '/services/$slug'
@@ -315,6 +327,7 @@ export interface RootRouteChildren {
   StartProjectRoute: typeof StartProjectRoute
   TechnologiesRoute: typeof TechnologiesRoute
   TermsRoute: typeof TermsRoute
+  AdminLoginRoute: typeof AdminLoginRoute
   BlogSlugRoute: typeof BlogSlugRoute
   PortfolioSlugRoute: typeof PortfolioSlugRoute
   ServicesSlugRoute: typeof ServicesSlugRoute
@@ -437,6 +450,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog/': {
       id: '/blog/'
       path: '/blog'
@@ -517,6 +537,7 @@ const rootRouteChildren: RootRouteChildren = {
   StartProjectRoute: StartProjectRoute,
   TechnologiesRoute: TechnologiesRoute,
   TermsRoute: TermsRoute,
+  AdminLoginRoute: AdminLoginRoute,
   BlogSlugRoute: BlogSlugRoute,
   PortfolioSlugRoute: PortfolioSlugRoute,
   ServicesSlugRoute: ServicesSlugRoute,
@@ -527,13 +548,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

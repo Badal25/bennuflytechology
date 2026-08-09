@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard,
@@ -21,6 +21,7 @@ import {
   LogOut,
   ShieldAlert,
   BarChart3,
+  Loader2,
 } from "lucide-react";
 import { Wordmark } from "@/components/brand/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -145,14 +146,45 @@ export function AdminShell({
   children: ReactNode;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { user, roles, isSuperAdmin } = useAuth();
+  const { user, roles, isSuperAdmin, isStaff, loading } = useAuth();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const allowed = canAccessPath(pathname, isSuperAdmin, roles);
 
+  useEffect(() => {
+    if (!loading && user && !isStaff) {
+      const timer = setTimeout(() => navigate({ to: "/" }), 2500);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [loading, user, isStaff, navigate]);
+
   async function handleSignOut() {
     await signOut();
-    navigate({ to: "/auth" });
+    navigate({ to: "/admin/login", replace: true });
+  }
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Loader2 className="size-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (!isStaff) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background px-6 text-center">
+        <ShieldAlert className="size-10 text-destructive" />
+        <h1 className="text-xl font-semibold text-foreground">
+          Access denied. You do not have permission to access the admin dashboard.
+        </h1>
+        <p className="text-sm text-muted-foreground">Redirecting you back to the website…</p>
+        <Button variant="outline" onClick={handleSignOut}>
+          <LogOut className="mr-2 size-4" /> Sign out
+        </Button>
+      </div>
+    );
   }
 
   return (
