@@ -39,6 +39,8 @@ import { Route as AuthenticatedAdminFaqsRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAdminIndustriesRouteImport } from './routes/_authenticated/admin/industries'
 import { Route as AuthenticatedAdminJobsRouteImport } from './routes/_authenticated/admin/jobs'
 import { Route as AuthenticatedAdminLeadsRouteImport } from './routes/_authenticated/admin/leads'
+import { Route as AuthenticatedAdminMediaRouteImport } from './routes/_authenticated/admin/media'
+import { Route as AuthenticatedAdminNewsletterRouteImport } from './routes/_authenticated/admin/newsletter'
 import { Route as AuthenticatedAdminPortfolioRouteImport } from './routes/_authenticated/admin/portfolio'
 import { Route as AuthenticatedAdminServicesRouteImport } from './routes/_authenticated/admin/services'
 import { Route as AuthenticatedAdminTeamRouteImport } from './routes/_authenticated/admin/team'
@@ -197,6 +199,17 @@ const AuthenticatedAdminLeadsRoute = AuthenticatedAdminLeadsRouteImport.update({
   path: '/admin/leads',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminMediaRoute = AuthenticatedAdminMediaRouteImport.update({
+  id: '/admin/media',
+  path: '/admin/media',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminNewsletterRoute =
+  AuthenticatedAdminNewsletterRouteImport.update({
+    id: '/admin/newsletter',
+    path: '/admin/newsletter',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminPortfolioRoute =
   AuthenticatedAdminPortfolioRouteImport.update({
     id: '/admin/portfolio',
@@ -261,6 +274,8 @@ export interface FileRoutesByFullPath {
   '/admin/industries': typeof AuthenticatedAdminIndustriesRoute
   '/admin/jobs': typeof AuthenticatedAdminJobsRoute
   '/admin/leads': typeof AuthenticatedAdminLeadsRoute
+  '/admin/media': typeof AuthenticatedAdminMediaRoute
+  '/admin/newsletter': typeof AuthenticatedAdminNewsletterRoute
   '/admin/portfolio': typeof AuthenticatedAdminPortfolioRoute
   '/admin/services': typeof AuthenticatedAdminServicesRoute
   '/admin/team': typeof AuthenticatedAdminTeamRoute
@@ -298,6 +313,8 @@ export interface FileRoutesByTo {
   '/admin/industries': typeof AuthenticatedAdminIndustriesRoute
   '/admin/jobs': typeof AuthenticatedAdminJobsRoute
   '/admin/leads': typeof AuthenticatedAdminLeadsRoute
+  '/admin/media': typeof AuthenticatedAdminMediaRoute
+  '/admin/newsletter': typeof AuthenticatedAdminNewsletterRoute
   '/admin/portfolio': typeof AuthenticatedAdminPortfolioRoute
   '/admin/services': typeof AuthenticatedAdminServicesRoute
   '/admin/team': typeof AuthenticatedAdminTeamRoute
@@ -337,6 +354,8 @@ export interface FileRoutesById {
   '/_authenticated/admin/industries': typeof AuthenticatedAdminIndustriesRoute
   '/_authenticated/admin/jobs': typeof AuthenticatedAdminJobsRoute
   '/_authenticated/admin/leads': typeof AuthenticatedAdminLeadsRoute
+  '/_authenticated/admin/media': typeof AuthenticatedAdminMediaRoute
+  '/_authenticated/admin/newsletter': typeof AuthenticatedAdminNewsletterRoute
   '/_authenticated/admin/portfolio': typeof AuthenticatedAdminPortfolioRoute
   '/_authenticated/admin/services': typeof AuthenticatedAdminServicesRoute
   '/_authenticated/admin/team': typeof AuthenticatedAdminTeamRoute
@@ -376,6 +395,8 @@ export interface FileRouteTypes {
     | '/admin/industries'
     | '/admin/jobs'
     | '/admin/leads'
+    | '/admin/media'
+    | '/admin/newsletter'
     | '/admin/portfolio'
     | '/admin/services'
     | '/admin/team'
@@ -413,6 +434,8 @@ export interface FileRouteTypes {
     | '/admin/industries'
     | '/admin/jobs'
     | '/admin/leads'
+    | '/admin/media'
+    | '/admin/newsletter'
     | '/admin/portfolio'
     | '/admin/services'
     | '/admin/team'
@@ -451,6 +474,8 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/industries'
     | '/_authenticated/admin/jobs'
     | '/_authenticated/admin/leads'
+    | '/_authenticated/admin/media'
+    | '/_authenticated/admin/newsletter'
     | '/_authenticated/admin/portfolio'
     | '/_authenticated/admin/services'
     | '/_authenticated/admin/team'
@@ -698,6 +723,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminLeadsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/media': {
+      id: '/_authenticated/admin/media'
+      path: '/admin/media'
+      fullPath: '/admin/media'
+      preLoaderRoute: typeof AuthenticatedAdminMediaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/newsletter': {
+      id: '/_authenticated/admin/newsletter'
+      path: '/admin/newsletter'
+      fullPath: '/admin/newsletter'
+      preLoaderRoute: typeof AuthenticatedAdminNewsletterRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/portfolio': {
       id: '/_authenticated/admin/portfolio'
       path: '/admin/portfolio'
@@ -750,6 +789,8 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminIndustriesRoute: typeof AuthenticatedAdminIndustriesRoute
   AuthenticatedAdminJobsRoute: typeof AuthenticatedAdminJobsRoute
   AuthenticatedAdminLeadsRoute: typeof AuthenticatedAdminLeadsRoute
+  AuthenticatedAdminMediaRoute: typeof AuthenticatedAdminMediaRoute
+  AuthenticatedAdminNewsletterRoute: typeof AuthenticatedAdminNewsletterRoute
   AuthenticatedAdminPortfolioRoute: typeof AuthenticatedAdminPortfolioRoute
   AuthenticatedAdminServicesRoute: typeof AuthenticatedAdminServicesRoute
   AuthenticatedAdminTeamRoute: typeof AuthenticatedAdminTeamRoute
@@ -766,6 +807,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminIndustriesRoute: AuthenticatedAdminIndustriesRoute,
   AuthenticatedAdminJobsRoute: AuthenticatedAdminJobsRoute,
   AuthenticatedAdminLeadsRoute: AuthenticatedAdminLeadsRoute,
+  AuthenticatedAdminMediaRoute: AuthenticatedAdminMediaRoute,
+  AuthenticatedAdminNewsletterRoute: AuthenticatedAdminNewsletterRoute,
   AuthenticatedAdminPortfolioRoute: AuthenticatedAdminPortfolioRoute,
   AuthenticatedAdminServicesRoute: AuthenticatedAdminServicesRoute,
   AuthenticatedAdminTeamRoute: AuthenticatedAdminTeamRoute,
