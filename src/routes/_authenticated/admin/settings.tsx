@@ -95,7 +95,10 @@ function SettingsPage() {
       ? await (supabase.from("website_settings") as any).update(payload).eq("id", (data as any).id)
       : await (supabase.from("website_settings") as any).insert(payload);
     setSaving(false);
-    if (e) return toast.error(e.message);
+    if (e) {
+      toast.error(e.message);
+      return;
+    }
     toast.success("Settings saved");
     logAudit("update", "website_settings", (data as any)?.id ?? null, "Updated website settings");
     queryClient.invalidateQueries({ queryKey: ["website_settings_admin"] });

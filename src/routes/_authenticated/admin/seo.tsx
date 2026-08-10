@@ -82,7 +82,10 @@ function SeoPage() {
       .from("seo_settings")
       .upsert({ page, ...form, updated_at: new Date().toISOString() } as any, { onConflict: "page" });
     setSaving(false);
-    if (e) return toast.error(e.message);
+    if (e) {
+      toast.error(e.message);
+      return;
+    }
     toast.success("SEO settings saved");
     logAudit("update", "seo_settings", null, `Updated SEO for ${page}`);
     queryClient.invalidateQueries({ queryKey: ["seo_settings"] });

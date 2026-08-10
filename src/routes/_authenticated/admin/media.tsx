@@ -80,13 +80,19 @@ function MediaPage() {
 
   async function openFile(path: string) {
     const { data, error: e } = await supabase.storage.from("media").createSignedUrl(path, 300);
-    if (e || !data) return toast.error(e?.message ?? "Could not open file");
+    if (e || !data) {
+      toast.error(e?.message ?? "Could not open file");
+      return;
+    }
     window.open(data.signedUrl, "_blank", "noopener");
   }
 
   async function copyRef(path: string) {
     const { data, error: e } = await supabase.storage.from("media").createSignedUrl(path, 60 * 60 * 24 * 7);
-    if (e || !data) return toast.error(e?.message ?? "Could not create link");
+    if (e || !data) {
+      toast.error(e?.message ?? "Could not create link");
+      return;
+    }
     await navigator.clipboard.writeText(data.signedUrl);
     toast.success("Signed URL copied (valid 7 days)");
   }

@@ -64,7 +64,10 @@ function ApplicationsPage() {
 
   async function openResume(path: string) {
     const { data, error: e } = await supabase.storage.from("resumes").createSignedUrl(path, 60);
-    if (e || !data) return toast.error(e?.message ?? "Could not open resume");
+    if (e || !data) {
+      toast.error(e?.message ?? "Could not open resume");
+      return;
+    }
     window.open(data.signedUrl, "_blank", "noopener");
   }
 
