@@ -52,7 +52,9 @@ export type Database = {
           content: string | null
           created_at: string
           excerpt: string | null
+          featured: boolean
           id: string
+          og_image: string | null
           published_at: string | null
           seo_description: string | null
           seo_title: string | null
@@ -70,7 +72,9 @@ export type Database = {
           content?: string | null
           created_at?: string
           excerpt?: string | null
+          featured?: boolean
           id?: string
+          og_image?: string | null
           published_at?: string | null
           seo_description?: string | null
           seo_title?: string | null
@@ -88,7 +92,9 @@ export type Database = {
           content?: string | null
           created_at?: string
           excerpt?: string | null
+          featured?: boolean
           id?: string
+          og_image?: string | null
           published_at?: string | null
           seo_description?: string | null
           seo_title?: string | null
@@ -463,6 +469,8 @@ export type Database = {
       portfolio_projects: {
         Row: {
           category: string | null
+          client_name: string | null
+          completion_date: string | null
           cover_image: string | null
           created_at: string
           description: string | null
@@ -472,6 +480,8 @@ export type Database = {
           id: string
           live_url: string | null
           project_status: string
+          seo_description: string | null
+          seo_title: string | null
           short_description: string | null
           slug: string
           sort_order: number
@@ -482,6 +492,8 @@ export type Database = {
         }
         Insert: {
           category?: string | null
+          client_name?: string | null
+          completion_date?: string | null
           cover_image?: string | null
           created_at?: string
           description?: string | null
@@ -491,6 +503,8 @@ export type Database = {
           id?: string
           live_url?: string | null
           project_status?: string
+          seo_description?: string | null
+          seo_title?: string | null
           short_description?: string | null
           slug: string
           sort_order?: number
@@ -501,6 +515,8 @@ export type Database = {
         }
         Update: {
           category?: string | null
+          client_name?: string | null
+          completion_date?: string | null
           cover_image?: string | null
           created_at?: string
           description?: string | null
@@ -510,6 +526,8 @@ export type Database = {
           id?: string
           live_url?: string | null
           project_status?: string
+          seo_description?: string | null
+          seo_title?: string | null
           short_description?: string | null
           slug?: string
           sort_order?: number
@@ -608,7 +626,11 @@ export type Database = {
           canonical_url: string | null
           id: string
           keywords: string | null
+          no_follow: boolean
+          no_index: boolean
+          og_description: string | null
           og_image: string | null
+          og_title: string | null
           page: string
           seo_description: string | null
           seo_title: string | null
@@ -618,7 +640,11 @@ export type Database = {
           canonical_url?: string | null
           id?: string
           keywords?: string | null
+          no_follow?: boolean
+          no_index?: boolean
+          og_description?: string | null
           og_image?: string | null
+          og_title?: string | null
           page: string
           seo_description?: string | null
           seo_title?: string | null
@@ -628,7 +654,11 @@ export type Database = {
           canonical_url?: string | null
           id?: string
           keywords?: string | null
+          no_follow?: boolean
+          no_index?: boolean
+          og_description?: string | null
           og_image?: string | null
+          og_title?: string | null
           page?: string
           seo_description?: string | null
           seo_title?: string | null
@@ -639,7 +669,10 @@ export type Database = {
       services: {
         Row: {
           created_at: string
+          cta_text: string | null
+          cta_url: string | null
           description: string | null
+          featured: boolean
           features: string[]
           icon: string | null
           id: string
@@ -650,12 +683,16 @@ export type Database = {
           slug: string
           sort_order: number
           status: Database["public"]["Enums"]["content_status"]
+          technologies: string[]
           title: string
           updated_at: string
         }
         Insert: {
           created_at?: string
+          cta_text?: string | null
+          cta_url?: string | null
           description?: string | null
+          featured?: boolean
           features?: string[]
           icon?: string | null
           id?: string
@@ -666,12 +703,16 @@ export type Database = {
           slug: string
           sort_order?: number
           status?: Database["public"]["Enums"]["content_status"]
+          technologies?: string[]
           title: string
           updated_at?: string
         }
         Update: {
           created_at?: string
+          cta_text?: string | null
+          cta_url?: string | null
           description?: string | null
+          featured?: boolean
           features?: string[]
           icon?: string | null
           id?: string
@@ -682,6 +723,7 @@ export type Database = {
           slug?: string
           sort_order?: number
           status?: Database["public"]["Enums"]["content_status"]
+          technologies?: string[]
           title?: string
           updated_at?: string
         }
@@ -722,6 +764,7 @@ export type Database = {
           email: string | null
           github: string | null
           id: string
+          instagram: string | null
           linkedin: string | null
           name: string
           photo: string | null
@@ -735,6 +778,7 @@ export type Database = {
           email?: string | null
           github?: string | null
           id?: string
+          instagram?: string | null
           linkedin?: string | null
           name: string
           photo?: string | null
@@ -748,6 +792,7 @@ export type Database = {
           email?: string | null
           github?: string | null
           id?: string
+          instagram?: string | null
           linkedin?: string | null
           name?: string
           photo?: string | null
@@ -766,6 +811,7 @@ export type Database = {
           name: string
           sort_order: number
           status: Database["public"]["Enums"]["content_status"]
+          website_url: string | null
         }
         Insert: {
           category: string
@@ -776,6 +822,7 @@ export type Database = {
           name: string
           sort_order?: number
           status?: Database["public"]["Enums"]["content_status"]
+          website_url?: string | null
         }
         Update: {
           category?: string
@@ -786,6 +833,7 @@ export type Database = {
           name?: string
           sort_order?: number
           status?: Database["public"]["Enums"]["content_status"]
+          website_url?: string | null
         }
         Relationships: []
       }
@@ -856,18 +904,24 @@ export type Database = {
           booking_url: string | null
           company_name: string
           copyright: string | null
+          default_og_image: string | null
+          default_seo_description: string | null
+          default_seo_title: string | null
           email: string | null
           facebook: string | null
           favicon: string | null
           footer_text: string | null
           github: string | null
+          google_maps_url: string | null
           id: string
           instagram: string | null
           linkedin: string | null
           logo: string | null
           phone: string | null
           tagline: string | null
+          twitter_x: string | null
           updated_at: string
+          website_url: string | null
           whatsapp: string | null
           whatsapp_message: string | null
           working_hours: string | null
@@ -879,18 +933,24 @@ export type Database = {
           booking_url?: string | null
           company_name?: string
           copyright?: string | null
+          default_og_image?: string | null
+          default_seo_description?: string | null
+          default_seo_title?: string | null
           email?: string | null
           facebook?: string | null
           favicon?: string | null
           footer_text?: string | null
           github?: string | null
+          google_maps_url?: string | null
           id?: string
           instagram?: string | null
           linkedin?: string | null
           logo?: string | null
           phone?: string | null
           tagline?: string | null
+          twitter_x?: string | null
           updated_at?: string
+          website_url?: string | null
           whatsapp?: string | null
           whatsapp_message?: string | null
           working_hours?: string | null
@@ -902,18 +962,24 @@ export type Database = {
           booking_url?: string | null
           company_name?: string
           copyright?: string | null
+          default_og_image?: string | null
+          default_seo_description?: string | null
+          default_seo_title?: string | null
           email?: string | null
           facebook?: string | null
           favicon?: string | null
           footer_text?: string | null
           github?: string | null
+          google_maps_url?: string | null
           id?: string
           instagram?: string | null
           linkedin?: string | null
           logo?: string | null
           phone?: string | null
           tagline?: string | null
+          twitter_x?: string | null
           updated_at?: string
+          website_url?: string | null
           whatsapp?: string | null
           whatsapp_message?: string | null
           working_hours?: string | null
