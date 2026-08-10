@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { AreaChart, Area, BarChart, Bar, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { format, subDays, startOfDay } from "date-fns";
@@ -6,28 +6,32 @@ import { Users, FileText, Briefcase, FolderKanban, Newspaper, Mail, Loader2 } fr
 import { supabase } from "@/integrations/supabase/client";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
   head: () => ({ meta: [{ name: "robots", content: "noindex" }] }),
   component: DashboardPage,
 });
 
-const KPIS: { key: string; label: string; table: "leads" | "jobs" | "job_applications" | "blogs" | "portfolio_projects" | "newsletter_subscribers"; icon: typeof Users; filter?: (q: any) => any }[] = [
-  { key: "leads", label: "Total Leads", table: "leads", icon: Users },
-  { key: "new_leads", label: "New Leads", table: "leads", icon: Users, filter: (q) => q.eq("status", "New") },
-  { key: "jobs", label: "Active Jobs", table: "jobs", icon: Briefcase, filter: (q) => q.eq("status", "published") },
-  { key: "applications", label: "Applications", table: "job_applications", icon: FileText },
-  { key: "blogs", label: "Published Blogs", table: "blogs", icon: Newspaper, filter: (q) => q.eq("status", "published") },
-  { key: "portfolio", label: "Portfolio Projects", table: "portfolio_projects", icon: FolderKanban },
-  { key: "newsletter", label: "Newsletter Subscribers", table: "newsletter_subscribers", icon: Mail },
+type Access = "content" | "hr" | "sales";
+
+const KPIS: { key: string; label: string; access: Access; table: "leads" | "jobs" | "job_applications" | "blogs" | "portfolio_projects" | "newsletter_subscribers"; icon: typeof Users; filter?: (q: any) => any }[] = [
+  { key: "leads", label: "Total Leads", access: "sales", table: "leads", icon: Users },
+  { key: "new_leads", label: "New Leads", access: "sales", table: "leads", icon: Users, filter: (q) => q.eq("status", "NEW") },
+  { key: "jobs", label: "Active Jobs", access: "hr", table: "jobs", icon: Briefcase, filter: (q) => q.eq("status", "published") },
+  { key: "applications", label: "Applications", access: "hr", table: "job_applications", icon: FileText },
+  { key: "blogs", label: "Published Blogs", access: "content", table: "blogs", icon: Newspaper, filter: (q) => q.eq("status", "published") },
+  { key: "portfolio", label: "Portfolio Projects", access: "content", table: "portfolio_projects", icon: FolderKanban },
+  { key: "newsletter", label: "Newsletter Subscribers", access: "sales", table: "newsletter_subscribers", icon: Mail },
 ];
 
-function useKpis() {
+function useKpis(list: typeof KPIS) {
   return useQuery({
-    queryKey: ["admin-kpis"],
+    queryKey: ["admin-kpis", list.map((k) => k.key).join(",")],
     queryFn: async () => {
       const results = await Promise.all(
-        KPIS.map(async (k) => {
+        list.map(async (k) => {
           let q = supabase.from(k.table).select("*", { count: "exact", head: true });
           if (k.filter) q = k.filter(q);
           const { count, error } = await q;
@@ -60,8 +64,48 @@ function useDailySeries(table: "leads" | "job_applications") {
   });
 }
 
+function useRecentActivity(enabled: { sales: boolean; hr: boolean; content: boolean }) {
+  return useQuery({
+    queryKey: ["admin-activity", enabled],
+    queryFn: async () => {
+      const events: { id: string; label: string; detail: string; at: string }[] = [];
+      if (enabled.sales) {
+        const { data } = await supabase.from("leads").select("id, name, created_at").order("created_at", { ascending: false }).limit(5);
+        for (const r of data ?? []) events.push({ id: `lead-${r.id}`, label: "New lead", detail: r.name, at: r.created_at });
+        const { data: subs } = await supabase.from("newsletter_subscribers").select("id, email, subscribed_at").order("subscribed_at", { ascending: false }).limit(5);
+        for (const r of subs ?? []) events.push({ id: `sub-${r.id}`, label: "New subscriber", detail: r.email, at: r.subscribed_at });
+      }
+      if (enabled.hr) {
+        const { data } = await supabase.from("job_applications").select("id, full_name, created_at").order("created_at", { ascending: false }).limit(5);
+        for (const r of data ?? []) events.push({ id: `app-${r.id}`, label: "New application", detail: r.full_name, at: r.created_at });
+      }
+      if (enabled.content) {
+        const { data } = await supabase.from("blogs").select("id, title, published_at").eq("status", "published").not("published_at", "is", null).order("published_at", { ascending: false }).limit(5);
+        for (const r of data ?? []) events.push({ id: `blog-${r.id}`, label: "Blog published", detail: r.title, at: r.published_at as string });
+      }
+      return events.sort((a, b) => (a.at < b.at ? 1 : -1)).slice(0, 8);
+    },
+  });
+}
+
 function DashboardPage() {
-  const { data: kpis, isLoading } = useKpis();
+  const { isSuperAdmin, canContent, canHR, canSales } = useAuth();
+  const access = {
+    content: isSuperAdmin || canContent,
+    hr: isSuperAdmin || canHR,
+    sales: isSuperAdmin || canSales,
+  };
+  const visibleKpis = KPIS.filter((k) => access[k.access]);
+  const quickActions = [
+    { to: "/admin/services", label: "Add Service", show: access.content },
+    { to: "/admin/portfolio", label: "Add Portfolio", show: access.content },
+    { to: "/admin/jobs", label: "Create Job", show: access.hr },
+    { to: "/admin/blogs", label: "Write Blog", show: access.content },
+    { to: "/admin/leads", label: "View Leads", show: access.sales },
+    { to: "/admin/applications", label: "View Applications", show: access.hr },
+  ].filter((a) => a.show);
+  const { data: kpis, isLoading } = useKpis(visibleKpis);
+  const activity = useRecentActivity(access);
   const leadsSeries = useDailySeries("leads");
   const appsSeries = useDailySeries("job_applications");
 
@@ -72,7 +116,7 @@ function DashboardPage() {
     <AdminShell title="Dashboard" breadcrumb="Overview">
       <div className="space-y-6">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {KPIS.map((k) => {
+          {visibleKpis.map((k) => {
             const Icon = k.icon;
             return (
               <Card key={k.key}>
@@ -91,6 +135,21 @@ function DashboardPage() {
             );
           })}
         </div>
+
+        {quickActions.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm font-semibold">Quick actions</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-wrap gap-2">
+              {quickActions.map((a) => (
+                <Button key={a.label} asChild size="sm" variant="outline">
+                  <Link to={a.to}>{a.label}</Link>
+                </Button>
+              ))}
+            </CardContent>
+          </Card>
+        )}
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <Card>
@@ -153,6 +212,33 @@ function DashboardPage() {
             </CardContent>
           </Card>
         </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-semibold">Recent activity</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {activity.isLoading ? (
+              <Loader2 className="size-5 animate-spin text-muted-foreground" />
+            ) : (activity.data ?? []).length === 0 ? (
+              <p className="text-sm text-muted-foreground">No recent activity yet.</p>
+            ) : (
+              <ul className="divide-y divide-border">
+                {(activity.data ?? []).map((e) => (
+                  <li key={e.id} className="flex items-center justify-between gap-3 py-2.5 text-sm">
+                    <span className="min-w-0">
+                      <span className="font-medium text-foreground">{e.label}</span>{" "}
+                      <span className="truncate text-muted-foreground">— {e.detail}</span>
+                    </span>
+                    <span className="shrink-0 text-xs text-muted-foreground">
+                      {format(new Date(e.at), "d MMM, HH:mm")}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </AdminShell>
   );
