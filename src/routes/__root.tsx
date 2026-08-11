@@ -95,6 +95,41 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Bennufly Technology Pvt. Ltd.",
+          description:
+            "Software, AI and digital product development company based in Nagpur, Maharashtra, India.",
+          foundingDate: "2026",
+          email: "supportbennufly@gmail.com",
+          telephone: "+91 94041 44550",
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "IT Park",
+            addressLocality: "Nagpur",
+            addressRegion: "Maharashtra",
+            addressCountry: "IN",
+          },
+          sameAs: [
+            "https://www.linkedin.com/company/bennuflytech/",
+            "https://www.instagram.com/officialbennufly/",
+          ],
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Bennufly Technology",
+          inLanguage: "en",
+        }),
+      },
+    ],
     links: [
       {
         rel: "stylesheet",
@@ -117,7 +152,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
         <HeadContent />

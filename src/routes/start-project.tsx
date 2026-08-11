@@ -101,44 +101,25 @@ function QuoteForm({ serviceOptions }: { serviceOptions: string[] }) {
     setBusy(true);
     const d = parsed.data;
 
-    const { data: lead, error: leadError } = await supabase
-      .from("leads")
-      .insert({
-        name: d.name,
-        email: d.email.toLowerCase(),
-        phone: d.phone || null,
-        company: d.company || null,
-        service: d.services.join(", "),
-        budget: d.budget,
-        timeline: d.timeline,
-        message: d.description,
-        source: "start-project",
-      })
-      .select("id")
-      .single();
-
-    if (leadError || !lead) {
-      setBusy(false);
-      toast.error("We could not submit your request right now. Please try again.");
-      return;
-    }
-
-    const { error: quoteError } = await supabase.from("quote_requests").insert({
-      lead_id: lead.id,
-      project_type: d.project_type,
-      services: d.services,
-      budget: d.budget,
-      timeline: d.timeline,
-      description: d.description,
+    const { error: submitError } = await supabase.rpc("submit_project_inquiry", {
+      _name: d.name,
+      _email: d.email.toLowerCase(),
+      _phone: d.phone || "",
+      _company: d.company || "",
+      _project_type: d.project_type,
+      _services: d.services,
+      _budget: d.budget,
+      _timeline: d.timeline,
+      _description: d.description,
     });
 
     setBusy(false);
-    if (quoteError) {
+    if (submitError) {
       toast.error("We could not submit your request right now. Please try again.");
       return;
     }
     setDone(true);
-    toast.success("Request received. We will get back to you shortly.");
+    toast.success("Thanks for reaching out. Our team will get back to you soon.");
   }
 
   if (done) {
