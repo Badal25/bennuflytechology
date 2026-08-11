@@ -153,7 +153,6 @@ function HeroVisual() {
 function Home() {
   return (
     <SiteShell>
-      <h1 className="sr-only">Bennufly Technology Pvt. Ltd.</h1>
       <Hero />
 
       <Section className="border-y border-hairline bg-surface/30 !py-12">
