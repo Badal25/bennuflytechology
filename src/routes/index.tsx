@@ -48,25 +48,25 @@ function Hero() {
             Technology &amp; Digital Product Development · Nagpur, India
           </span>
           <h1 className="mt-6 text-4xl font-bold text-balance sm:text-5xl md:text-6xl lg:text-[4.2rem] lg:leading-[1.02]">
-            Building Ideas.{" "}
-            <span className="text-gradient">Engineering the Future.</span>
+            Build. Innovate.{" "}
+            <span className="text-gradient">Transform.</span>
           </h1>
           <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Bennufly Technology Pvt. Ltd. builds modern software, AI solutions, mobile applications
-            and digital products that help businesses turn ideas into scalable technology.
+            Bennufly Technology helps startups, businesses and ambitious teams turn ideas into
+            powerful digital products with modern software, AI and emerging technologies.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <Link
-              to="/contact"
+              to="/start-project"
               className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3.5 font-semibold text-primary-foreground transition-opacity hover:opacity-90"
             >
-              <CalendarCheck className="size-4" /> Book a Free Consultation
+              <CalendarCheck className="size-4" /> Start a Project
             </Link>
             <Link
-              to="/services"
+              to="/portfolio"
               className="inline-flex items-center gap-2 rounded-xl border border-border px-6 py-3.5 font-semibold transition-colors hover:bg-surface"
             >
-              Explore Our Services
+              Explore Our Work
             </Link>
             <Link
               to="/careers"
