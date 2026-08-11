@@ -1004,6 +1004,20 @@ export type Database = {
         Returns: boolean
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      submit_project_inquiry: {
+        Args: {
+          _budget: string
+          _company: string
+          _description: string
+          _email: string
+          _name: string
+          _phone: string
+          _project_type: string
+          _services: string[]
+          _timeline: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "super_admin" | "hr" | "content_manager" | "sales" | "developer"
