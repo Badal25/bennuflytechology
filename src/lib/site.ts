@@ -21,7 +21,7 @@ export const FALLBACK_SETTINGS = {
   address: "IT Park, Nagpur, Maharashtra, India",
   linkedin: "https://www.linkedin.com/company/bennuflytech/",
   instagram: "https://www.instagram.com/officialbennufly/",
-  working_hours: "Mon - Sat, 10:00 - 19:00 IST",
+  working_hours: "Mon - Fri: 9:30 AM - 6:30 PM IST | Sat: 10:00 AM - 2:00 PM IST | Sun: Closed",
   footer_text: "Transforming Ideas into Powerful Digital Products.",
   copyright: "2026 Bennufly Technology Pvt. Ltd. All rights reserved.",
 };
@@ -44,10 +44,10 @@ export const PROCESS_STEPS = [
 
 export const WHY_BENNUFLY = [
   { title: "Modern Technology", text: "Current, well-supported tooling — not legacy stacks you inherit." },
+  { title: "Practical Solutions", text: "We solve the problem in front of you, without unnecessary complexity." },
   { title: "Scalable Architecture", text: "Systems designed to survive growth, not just the first release." },
   { title: "Client-Focused Development", text: "We build around your operations, users and constraints." },
-  { title: "Transparent Process", text: "Clear scope, visible progress and honest timelines." },
-  { title: "Flexible Engagement", text: "Project, retainer or team extension — whichever fits." },
+  { title: "Continuous Learning", text: "A team that keeps pace with the tools and techniques it ships with." },
   { title: "Long-Term Support", text: "Maintenance and improvement after launch, not a handoff." },
 ];
 
