@@ -161,13 +161,22 @@ function BlogDetail() {
                 .join(" · ")}
             </p>
 
-            {post.thumbnail && (
-              <img
-                src={post.thumbnail}
-                alt={post.title}
-                className="mt-8 w-full rounded-2xl border border-hairline object-cover"
-              />
-            )}
+            {post.thumbnail &&
+              (() => {
+                const img = contentImage(post.thumbnail);
+                return (
+                  <img
+                    src={img?.src ?? post.thumbnail}
+                    {...(img ? { srcSet: img.srcSet, sizes: img.sizes } : {})}
+                    width={1200}
+                    height={675}
+                    loading="lazy"
+                    decoding="async"
+                    alt={post.title}
+                    className="mt-8 aspect-video w-full rounded-2xl border border-hairline object-cover"
+                  />
+                );
+              })()}
 
             {post.excerpt && (
               <p className="mt-8 text-lg leading-relaxed text-muted-foreground">{post.excerpt}</p>
