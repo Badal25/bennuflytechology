@@ -3,20 +3,107 @@ import { ArrowLeft } from "lucide-react";
 import { SiteShell } from "@/components/site/site-shell";
 import { Section, EmptyState, CardSkeleton, ErrorState } from "@/components/site/primitives";
 import { useBlog } from "@/lib/db";
+import { supabase } from "@/integrations/supabase/client";
+
+function truncate(s: string, n = 155) {
+  const clean = s.replace(/\s+/g, " ").trim();
+  return clean.length > n ? `${clean.slice(0, n - 1).trimEnd()}…` : clean;
+}
 
 export const Route = createFileRoute("/blog/$slug")({
-  head: ({ params }) => ({
-    meta: [
-      { title: "Article — Bennufly Technology" },
-      { name: "description", content: "An article from the Bennufly Technology blog." },
-      { property: "og:title", content: "Article — Bennufly Technology" },
-      { property: "og:description", content: "An article from the Bennufly Technology blog." },
-      { property: "og:type", content: "article" },
-      { property: "og:url", content: `/blog/${params.slug}` },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [{ rel: "canonical", href: `/blog/${params.slug}` }],
-  }),
+  loader: async ({ params }) => {
+    const { data } = await supabase
+      .from("blogs")
+      .select(
+        "title, excerpt, content, thumbnail, og_image, seo_title, seo_description, category, tags, author_name, published_at, updated_at, status",
+      )
+      .eq("slug", params.slug)
+      .eq("status", "published")
+      .maybeSingle();
+    return { post: (data as any) ?? null };
+  },
+  head: ({ params, loaderData }) => {
+    const post = loaderData?.post as any;
+    const url = `/blog/${params.slug}`;
+    if (!post) {
+      return {
+        meta: [
+          { title: "Article not found — Bennufly Technology" },
+          { name: "description", content: "This article is unavailable or has been moved." },
+          { name: "robots", content: "noindex, follow" },
+        ],
+        links: [{ rel: "canonical", href: url }],
+      };
+    }
+    const title = `${post.seo_title || post.title} — Bennufly Technology`;
+    const description = truncate(
+      post.seo_description || post.excerpt || String(post.content ?? "") || post.title,
+    );
+    const image: string | null = post.og_image || post.thumbnail || null;
+    const isAbsolute = !!image && /^https?:\/\//i.test(image);
+
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { name: "author", content: post.author_name || "Bennufly Technology Pvt. Ltd." },
+        ...(post.tags?.length ? [{ name: "keywords", content: (post.tags as string[]).join(", ") }] : []),
+        { property: "og:title", content: post.seo_title || post.title },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "article" },
+        { property: "og:url", content: url },
+        { property: "og:site_name", content: "Bennufly Technology" },
+        ...(post.published_at
+          ? [{ property: "article:published_time", content: new Date(post.published_at).toISOString() }]
+          : []),
+        ...(post.category ? [{ property: "article:section", content: post.category }] : []),
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: post.seo_title || post.title },
+        { name: "twitter:description", content: description },
+        ...(isAbsolute
+          ? [
+              { property: "og:image", content: image as string },
+              { name: "twitter:image", content: image as string },
+            ]
+          : []),
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            headline: post.title,
+            description,
+            ...(isAbsolute ? { image: [image] } : {}),
+            author: { "@type": "Person", name: post.author_name || "Bennufly Technology" },
+            publisher: {
+              "@type": "Organization",
+              name: "Bennufly Technology Pvt. Ltd.",
+            },
+            ...(post.published_at ? { datePublished: new Date(post.published_at).toISOString() } : {}),
+            ...(post.updated_at ? { dateModified: new Date(post.updated_at).toISOString() } : {}),
+            mainEntityOfPage: { "@type": "WebPage", "@id": url },
+            ...(post.category ? { articleSection: post.category } : {}),
+            ...(post.tags?.length ? { keywords: (post.tags as string[]).join(", ") } : {}),
+          }),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: "/" },
+              { "@type": "ListItem", position: 2, name: "Blog", item: "/blog" },
+              { "@type": "ListItem", position: 3, name: post.title, item: url },
+            ],
+          }),
+        },
+      ],
+    };
+  },
   component: BlogDetail,
 });
 
