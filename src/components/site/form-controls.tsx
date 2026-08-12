@@ -30,6 +30,23 @@ export function Field({
 export const inputClass =
   "w-full rounded-lg border border-border bg-surface px-3.5 py-2.5 text-sm outline-none transition-colors focus:border-primary disabled:opacity-60";
 
+/** Invisible decoy field. Bots fill it in; humans never see it. */
+export function HoneypotField({ onChange }: { onChange: (v: string) => void }) {
+  return (
+    <div aria-hidden="true" className="absolute left-[-9999px] top-0 h-0 w-0 overflow-hidden">
+      <label htmlFor="company-website">Company website</label>
+      <input
+        id="company-website"
+        name="company_website"
+        type="text"
+        tabIndex={-1}
+        autoComplete="off"
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </div>
+  );
+}
+
 export function SubmitButton({
   busy,
   children,
