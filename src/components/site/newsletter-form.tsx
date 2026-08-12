@@ -2,6 +2,8 @@ import { useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { HoneypotField } from "@/components/site/form-controls";
+import { useSpamGuard } from "@/lib/spam-guard";
 
 const schema = z.object({
   name: z.string().trim().max(80).optional(),
@@ -12,12 +14,18 @@ export function NewsletterForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [busy, setBusy] = useState(false);
+  const guard = useSpamGuard("newsletter");
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     const parsed = schema.safeParse({ name, email });
     if (!parsed.success) {
       toast.error(parsed.error.issues[0]?.message ?? "Invalid input");
+      return;
+    }
+    const spam = guard.check();
+    if (!spam.ok) {
+      toast.error(spam.reason);
       return;
     }
     setBusy(true);
@@ -35,12 +43,14 @@ export function NewsletterForm() {
       return;
     }
     toast.success("Subscribed. Thanks for following Bennufly.");
+    guard.markSubmitted();
     setName("");
     setEmail("");
   }
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-2 sm:flex-row">
+      <HoneypotField onChange={guard.setHoneypot} />
       <input
         value={name}
         onChange={(e) => setName(e.target.value)}

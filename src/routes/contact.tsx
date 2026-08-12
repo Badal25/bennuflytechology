@@ -5,7 +5,8 @@ import { toast } from "sonner";
 import { Mail, Phone, MapPin, MessageCircle, Clock } from "lucide-react";
 import { SiteShell, PageHero } from "@/components/site/site-shell";
 import { Section, Reveal } from "@/components/site/primitives";
-import { Field, inputClass, SubmitButton } from "@/components/site/form-controls";
+import { Field, inputClass, SubmitButton, HoneypotField } from "@/components/site/form-controls";
+import { useSpamGuard } from "@/lib/spam-guard";
 import { supabase } from "@/integrations/supabase/client";
 import { useSettings } from "@/lib/db";
 import { useServices } from "@/lib/db";
@@ -158,6 +159,7 @@ function ContactForm({ serviceOptions }: { serviceOptions: string[] }) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
+  const guard = useSpamGuard("contact");
 
   function set(k: string, v: string) {
     setValues((s) => ({ ...s, [k]: v }));
@@ -176,6 +178,11 @@ function ContactForm({ serviceOptions }: { serviceOptions: string[] }) {
       return;
     }
     setErrors({});
+    const spam = guard.check();
+    if (!spam.ok) {
+      toast.error(spam.reason);
+      return;
+    }
     setBusy(true);
     const d = parsed.data;
     const { error } = await supabase.from("leads").insert({
@@ -195,6 +202,7 @@ function ContactForm({ serviceOptions }: { serviceOptions: string[] }) {
       return;
     }
     setDone(true);
+    guard.markSubmitted();
     toast.success("Thanks for reaching out. Our team will get back to you soon.");
   }
 
@@ -209,6 +217,7 @@ function ContactForm({ serviceOptions }: { serviceOptions: string[] }) {
 
   return (
     <form onSubmit={submit} className="grid gap-4 rounded-2xl border border-hairline bg-card p-6 sm:grid-cols-2 sm:p-8">
+      <HoneypotField onChange={guard.setHoneypot} />
       <Field label="Name" required error={errors["name"]}>
         <input className={inputClass} maxLength={100} value={values["name"] ?? ""} onChange={(e) => set("name", e.target.value)} required />
       </Field>

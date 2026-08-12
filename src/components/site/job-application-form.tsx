@@ -2,7 +2,8 @@ import { useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Field, inputClass, SubmitButton } from "./form-controls";
+import { Field, inputClass, SubmitButton, HoneypotField } from "./form-controls";
+import { useSpamGuard } from "@/lib/spam-guard";
 
 const MAX_RESUME_BYTES = 5 * 1024 * 1024;
 const ALLOWED_EXT = ["pdf", "doc", "docx"];
@@ -29,6 +30,7 @@ export function JobApplicationForm({ job, onDone }: { job: Job; onDone?: () => v
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
+  const guard = useSpamGuard("job-application");
 
   function set(key: string, v: string) {
     setValues((s) => ({ ...s, [key]: v }));
@@ -48,6 +50,11 @@ export function JobApplicationForm({ job, onDone }: { job: Job; onDone?: () => v
       return;
     }
     setErrors({});
+    const spam = guard.check();
+    if (!spam.ok) {
+      toast.error(spam.reason);
+      return;
+    }
 
     if (file) {
       const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
@@ -94,6 +101,7 @@ export function JobApplicationForm({ job, onDone }: { job: Job; onDone?: () => v
       if (error) throw error;
 
       setDone(true);
+      guard.markSubmitted();
       toast.success("Application submitted successfully. Our team will review your application.");
       onDone?.();
     } catch {
@@ -116,6 +124,7 @@ export function JobApplicationForm({ job, onDone }: { job: Job; onDone?: () => v
 
   return (
     <form onSubmit={submit} className="grid gap-4 sm:grid-cols-2">
+      <HoneypotField onChange={guard.setHoneypot} />
       <Field label="Full name" required error={errors["full_name"]}>
         <input className={inputClass} maxLength={100} value={values["full_name"] ?? ""} onChange={(e) => set("full_name", e.target.value)} required />
       </Field>
