@@ -2,7 +2,8 @@ import { useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Field, inputClass, SubmitButton } from "./form-controls";
+import { Field, inputClass, SubmitButton, HoneypotField } from "./form-controls";
+import { useSpamGuard } from "@/lib/spam-guard";
 
 const MAX_RESUME_BYTES = 5 * 1024 * 1024;
 const ALLOWED_EXT = ["pdf", "doc", "docx"];
