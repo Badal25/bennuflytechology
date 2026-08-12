@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useId, type ReactNode } from "react";
 
 export function Field({
   label,
@@ -32,11 +32,12 @@ export const inputClass =
 
 /** Invisible decoy field. Bots fill it in; humans never see it. */
 export function HoneypotField({ onChange }: { onChange: (v: string) => void }) {
+  const id = useId();
   return (
     <div aria-hidden="true" className="absolute left-[-9999px] top-0 h-0 w-0 overflow-hidden">
-      <label htmlFor="company-website">Company website</label>
+      <label htmlFor={id}>Company website</label>
       <input
-        id="company-website"
+        id={id}
         name="company_website"
         type="text"
         tabIndex={-1}
