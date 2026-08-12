@@ -4,6 +4,7 @@ import { SiteShell } from "@/components/site/site-shell";
 import { Section, EmptyState, CardSkeleton, ErrorState } from "@/components/site/primitives";
 import { useBlog } from "@/lib/db";
 import { supabase } from "@/integrations/supabase/client";
+import { socialImageUrl, contentImage, OG_WIDTH, OG_HEIGHT } from "@/lib/og-image";
 
 function truncate(s: string, n = 155) {
   const clean = s.replace(/\s+/g, " ").trim();
@@ -40,7 +41,7 @@ export const Route = createFileRoute("/blog/$slug")({
       post.seo_description || post.excerpt || String(post.content ?? "") || post.title,
     );
     const image: string | null = post.og_image || post.thumbnail || null;
-    const isAbsolute = !!image && /^https?:\/\//i.test(image);
+    const card = socialImageUrl(image);
 
     return {
       meta: [
@@ -60,10 +61,16 @@ export const Route = createFileRoute("/blog/$slug")({
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: post.seo_title || post.title },
         { name: "twitter:description", content: description },
-        ...(isAbsolute
+        ...(card
           ? [
-              { property: "og:image", content: image as string },
-              { name: "twitter:image", content: image as string },
+              { property: "og:image", content: card },
+              { property: "og:image:secure_url", content: card },
+              { property: "og:image:type", content: "image/jpeg" },
+              { property: "og:image:width", content: String(OG_WIDTH) },
+              { property: "og:image:height", content: String(OG_HEIGHT) },
+              { property: "og:image:alt", content: post.title },
+              { name: "twitter:image", content: card },
+              { name: "twitter:image:alt", content: post.title },
             ]
           : []),
       ],
@@ -76,7 +83,7 @@ export const Route = createFileRoute("/blog/$slug")({
             "@type": "BlogPosting",
             headline: post.title,
             description,
-            ...(isAbsolute ? { image: [image] } : {}),
+            ...(card ? { image: [card] } : {}),
             author: { "@type": "Person", name: post.author_name || "Bennufly Technology" },
             publisher: {
               "@type": "Organization",
@@ -154,13 +161,22 @@ function BlogDetail() {
                 .join(" · ")}
             </p>
 
-            {post.thumbnail && (
-              <img
-                src={post.thumbnail}
-                alt={post.title}
-                className="mt-8 w-full rounded-2xl border border-hairline object-cover"
-              />
-            )}
+            {post.thumbnail &&
+              (() => {
+                const img = contentImage(post.thumbnail);
+                return (
+                  <img
+                    src={img?.src ?? post.thumbnail}
+                    {...(img ? { srcSet: img.srcSet, sizes: img.sizes } : {})}
+                    width={1200}
+                    height={675}
+                    loading="lazy"
+                    decoding="async"
+                    alt={post.title}
+                    className="mt-8 aspect-video w-full rounded-2xl border border-hairline object-cover"
+                  />
+                );
+              })()}
 
             {post.excerpt && (
               <p className="mt-8 text-lg leading-relaxed text-muted-foreground">{post.excerpt}</p>
