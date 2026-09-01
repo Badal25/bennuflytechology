@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, ArrowUpRight, Quote, Plus, Minus } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Quote, Plus, Minus, Linkedin, Github, Instagram, Mail } from "lucide-react";
 import { useState } from "react";
 import {
   useServices,
@@ -9,6 +9,7 @@ import {
   useStats,
   useTestimonials,
   useFaqs,
+  useTeam,
 } from "@/lib/db";
 import { PROCESS_STEPS, WHY_BENNUFLY } from "@/lib/site";
 import { DynamicIcon } from "./icon";
@@ -308,6 +309,183 @@ export function WhyBennufly() {
           </div>
         </Reveal>
       ))}
+    </div>
+  );
+}
+
+const FOUNDER_FOCUS = [
+  "Software & Digital Products",
+  "AI & Emerging Technologies",
+  "Web & Mobile Applications",
+  "Student Learning & Internship Opportunities",
+];
+
+type TeamMember = {
+  id: string;
+  name: string;
+  designation: string | null;
+  bio: string | null;
+  photo: string | null;
+  linkedin: string | null;
+  github: string | null;
+  instagram: string | null;
+  email: string | null;
+};
+
+function SocialLinks({ m, size = "size-9" }: { m: TeamMember; size?: string }) {
+  const links = [
+    { url: m.linkedin, label: `${m.name} on LinkedIn`, Icon: Linkedin },
+    { url: m.github, label: `${m.name} on GitHub`, Icon: Github },
+    { url: m.instagram, label: `${m.name} on Instagram`, Icon: Instagram },
+  ].filter((l) => l.url);
+  const showEmail = m.email && m.email.includes("@");
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {links.map(({ url, label, Icon }) => (
+        <a
+          key={url}
+          href={url!}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={label}
+          className={`inline-flex ${size} items-center justify-center rounded-xl border border-hairline bg-card text-muted-foreground transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary`}
+        >
+          <Icon className="size-4" />
+        </a>
+      ))}
+      {showEmail && (
+        <a
+          href={`mailto:${m.email}`}
+          aria-label={`Email ${m.name}`}
+          className={`inline-flex ${size} items-center justify-center rounded-xl border border-hairline bg-card text-muted-foreground transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:text-primary`}
+        >
+          <Mail className="size-4" />
+        </a>
+      )}
+    </div>
+  );
+}
+
+function MemberPhoto({ m, className }: { m: TeamMember; className?: string }) {
+  if (m.photo)
+    return (
+      <img
+        src={m.photo}
+        alt={`${m.name}, ${m.designation ?? "team member"} at Bennufly Technology`}
+        className={className}
+        loading="lazy"
+      />
+    );
+  return (
+    <span
+      className={`flex items-center justify-center font-display font-bold text-primary ${className}`}
+    >
+      {m.name
+        .split(" ")
+        .map((p) => p[0])
+        .slice(0, 2)
+        .join("")}
+    </span>
+  );
+}
+
+export function TeamSection() {
+  const { data, isLoading } = useTeam();
+  const members = (data ?? []) as TeamMember[];
+  const founder = members.find((m) => /founder/i.test(m.designation ?? ""));
+  const others = members.filter((m) => m !== founder);
+
+  if (isLoading) return <CardSkeleton count={2} />;
+  if (!members.length)
+    return (
+      <EmptyState
+        title="Team profiles coming soon."
+        description="Bennufly is a founder-led startup. Team members are published here as the team grows."
+      />
+    );
+
+  return (
+    <div className="space-y-14">
+      {founder && (
+        <Reveal>
+          <article className="relative overflow-hidden rounded-3xl border border-hairline bg-card">
+            <div
+              className="pointer-events-none absolute inset-0"
+              style={{ background: "var(--gradient-hero)" }}
+              aria-hidden
+            />
+            <div className="relative grid gap-10 p-8 sm:p-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:items-center lg:gap-14">
+              <div className="relative mx-auto w-full max-w-sm lg:mx-0">
+                <div
+                  className="pointer-events-none absolute -inset-4 rounded-[2rem] bg-primary/15 blur-2xl"
+                  aria-hidden
+                />
+                <div className="relative overflow-hidden rounded-3xl border border-hairline bg-surface-2 shadow-2xl">
+                  <MemberPhoto
+                    m={founder}
+                    className="aspect-[4/5] w-full object-cover transition-transform duration-700 hover:scale-[1.02]"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background/80 to-transparent p-4 backdrop-blur-[2px]">
+                    <p className="font-display text-lg font-bold">{founder.name}</p>
+                    <p className="text-sm text-primary">{founder.designation}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <p className="text-[11px] font-semibold tracking-[0.24em] text-primary uppercase">
+                  Meet the Founder
+                </p>
+                <h3 className="mt-3 font-display text-2xl font-bold text-balance sm:text-3xl">
+                  Building Bennufly from the ground up.
+                </h3>
+                <p className="mt-5 leading-relaxed text-muted-foreground">{founder.bio}</p>
+                <ul className="mt-6 grid gap-2.5 sm:grid-cols-2">
+                  {FOUNDER_FOCUS.map((f) => (
+                    <li
+                      key={f}
+                      className="rounded-xl border border-hairline bg-surface px-4 py-3 text-sm font-medium"
+                    >
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-7">
+                  <SocialLinks m={founder} size="size-10" />
+                </div>
+              </div>
+            </div>
+          </article>
+        </Reveal>
+      )}
+
+      {others.length > 0 && (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {others.map((m, i) => (
+            <Reveal key={m.id} delay={i * 50}>
+              <article className="group flex h-full flex-col rounded-2xl border border-hairline bg-card p-6 transition-all hover:-translate-y-0.5 hover:border-primary/40">
+                <div className="mb-5 flex items-center gap-4">
+                  <MemberPhoto
+                    m={m}
+                    className="size-14 shrink-0 overflow-hidden rounded-full border border-hairline bg-primary/10 object-cover"
+                  />
+                  <div className="min-w-0">
+                    <p className="font-display font-semibold">{m.name}</p>
+                    <p className="text-sm text-primary">{m.designation}</p>
+                  </div>
+                </div>
+                {m.bio && (
+                  <p className="flex-1 text-sm leading-relaxed text-muted-foreground">{m.bio}</p>
+                )}
+                <div className="mt-5 border-t border-hairline pt-4">
+                  <SocialLinks m={m} />
+                </div>
+              </article>
+            </Reveal>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

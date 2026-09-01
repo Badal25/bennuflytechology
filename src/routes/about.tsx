@@ -1,9 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell, PageHero } from "@/components/site/site-shell";
-import { Section, SectionHeading, EmptyState } from "@/components/site/primitives";
-import { WhyBennufly, FinalCta } from "@/components/site/sections";
+import { Section, SectionHeading } from "@/components/site/primitives";
+import { WhyBennufly, FinalCta, TeamSection } from "@/components/site/sections";
 import { MISSION, VISION } from "@/lib/site";
-import { useTeam } from "@/lib/db";
 
 const T = "About Bennufly Technology — Our Story, Mission & Vision";
 const D = "Bennufly Technology Pvt. Ltd. is a technology company founded in 2026 in Nagpur, building software, AI solutions and digital products.";
@@ -23,8 +22,6 @@ const BELIEFS = [
 ];
 
 function About() {
-  const { data: team } = useTeam();
-  const members = (team ?? []) as any[];
   return (
     <SiteShell>
       <PageHero eyebrow="About" title="A technology company built for what comes next." description="Founded in 2026 at IT Park, Nagpur, Bennufly Technology Pvt. Ltd. builds software, websites, mobile applications, AI-powered solutions and SaaS products for businesses across India and international markets." />
@@ -68,21 +65,9 @@ function About() {
       <Section>
         <SectionHeading eyebrow="Team" title="A founder-led startup" />
         <div className="mt-10">
-          {members.length ? (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {members.map((m) => (
-                <div key={m.id} className="rounded-2xl border border-hairline bg-card p-6">
-                  <p className="font-display font-semibold">{m.name}</p>
-                  <p className="text-sm text-muted-foreground">{m.designation}</p>
-                  {m.bio && <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{m.bio}</p>}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <EmptyState title="Team profiles coming soon." description="Bennufly is a founder-led startup. Team members are published here as the team grows." />
-          )}
+          <TeamSection />
         </div>
-        <p className="mt-6 text-sm text-muted-foreground">Want to be part of it? <Link to="/careers" className="font-semibold text-primary">View opportunities</Link>.</p>
+        <p className="mt-6 text-sm text-muted-foreground">Want to be part of it? <Link to="/careers" className="font-semibold text-primary">View Opportunities</Link>.</p>
       </Section>
       <FinalCta />
     </SiteShell>
