@@ -25,7 +25,42 @@ function About() {
   return (
     <SiteShell>
       <PageHero eyebrow="About" title="A technology company built for what comes next." description="Founded in 2026 at IT Park, Nagpur, Bennufly Technology Pvt. Ltd. builds software, websites, mobile applications, AI-powered solutions and SaaS products for businesses across India and international markets." />
-...
+      <Section>
+        <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr]">
+          <SectionHeading eyebrow="Our Story" title="Started in 2026, built for the long term." />
+          <div className="space-y-4 leading-relaxed text-muted-foreground">
+            <p>Bennufly began as a founder-led technology startup with a straightforward conviction: businesses do not need more software, they need software that actually fits how they work.</p>
+            <p>We build digital products end to end — discovery, design, engineering, deployment and support — and we do it remotely with clients in India and abroad.</p>
+            <p>Alongside client work, Bennufly runs learning and internship programs so students can gain practical experience on real projects rather than sample exercises.</p>
+          </div>
+        </div>
+      </Section>
+      <Section className="bg-surface/30">
+        <SectionHeading eyebrow="What We Believe" title="The principles we work by" />
+        <div className="mt-10 grid gap-px overflow-hidden rounded-2xl border border-hairline bg-hairline sm:grid-cols-2 lg:grid-cols-3">
+          {BELIEFS.map((b) => (
+            <div key={b.t} className="bg-card px-6 py-7">
+              <h3 className="font-display font-semibold">{b.t}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{b.d}</p>
+            </div>
+          ))}
+        </div>
+      </Section>
+      <Section>
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="rounded-2xl border border-hairline bg-card p-8">
+            <h2 className="font-display text-xl font-bold">Mission</h2>
+            <p className="mt-3 leading-relaxed text-muted-foreground">{MISSION}</p>
+          </div>
+          <div className="rounded-2xl border border-hairline bg-card p-8">
+            <h2 className="font-display text-xl font-bold">Vision</h2>
+            <p className="mt-3 leading-relaxed text-muted-foreground">{VISION}</p>
+          </div>
+        </div>
+      </Section>
+      <Section className="bg-surface/30">
+        <SectionHeading eyebrow="Why Bennufly" title="Technology + Innovation + Learning + Digital Products" description="We combine client product engineering with a deliberate talent pipeline, so the work and the team grow together." />
+        <div className="mt-10"><WhyBennufly /></div>
       </Section>
       <Section>
         <SectionHeading eyebrow="Team" title="A founder-led startup" />
