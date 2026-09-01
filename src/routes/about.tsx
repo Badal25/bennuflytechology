@@ -1,9 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell, PageHero } from "@/components/site/site-shell";
-import { Section, SectionHeading, EmptyState } from "@/components/site/primitives";
-import { WhyBennufly, FinalCta } from "@/components/site/sections";
+import { Section, SectionHeading } from "@/components/site/primitives";
+import { WhyBennufly, FinalCta, TeamSection } from "@/components/site/sections";
 import { MISSION, VISION } from "@/lib/site";
-import { useTeam } from "@/lib/db";
 
 const T = "About Bennufly Technology — Our Story, Mission & Vision";
 const D = "Bennufly Technology Pvt. Ltd. is a technology company founded in 2026 in Nagpur, building software, AI solutions and digital products.";
