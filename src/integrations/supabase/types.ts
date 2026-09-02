@@ -176,6 +176,83 @@ export type Database = {
         }
         Relationships: []
       }
+      internship_applications: {
+        Row: {
+          college: string | null
+          course: string | null
+          created_at: string
+          email: string
+          full_name: string
+          github_url: string | null
+          graduation_year: string | null
+          id: string
+          interested_domain: string | null
+          internal_notes: string | null
+          linkedin_url: string | null
+          motivation: string | null
+          phone: string | null
+          portfolio_url: string | null
+          program_id: string | null
+          program_name: string | null
+          resume_path: string | null
+          skills: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          college?: string | null
+          course?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          github_url?: string | null
+          graduation_year?: string | null
+          id?: string
+          interested_domain?: string | null
+          internal_notes?: string | null
+          linkedin_url?: string | null
+          motivation?: string | null
+          phone?: string | null
+          portfolio_url?: string | null
+          program_id?: string | null
+          program_name?: string | null
+          resume_path?: string | null
+          skills?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          college?: string | null
+          course?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          github_url?: string | null
+          graduation_year?: string | null
+          id?: string
+          interested_domain?: string | null
+          internal_notes?: string | null
+          linkedin_url?: string | null
+          motivation?: string | null
+          phone?: string | null
+          portfolio_url?: string | null
+          program_id?: string | null
+          program_name?: string | null
+          resume_path?: string | null
+          skills?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "internship_applications_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "learning_programs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       job_applications: {
         Row: {
           cover_letter: string | null
@@ -364,6 +441,159 @@ export type Database = {
           status?: string
           timeline?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      learning_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          name: string
+          slug: string
+          sort_order: number
+          status: Database["public"]["Enums"]["content_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          slug: string
+          sort_order?: number
+          status?: Database["public"]["Enums"]["content_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          slug?: string
+          sort_order?: number
+          status?: Database["public"]["Enums"]["content_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      learning_programs: {
+        Row: {
+          application_deadline: string | null
+          category: string | null
+          created_at: string
+          description: string | null
+          duration: string | null
+          eligibility: string | null
+          featured: boolean
+          id: string
+          mode: string
+          name: string
+          program_type: string
+          seats: number | null
+          skills: string[]
+          slug: string
+          sort_order: number
+          start_date: string | null
+          status: Database["public"]["Enums"]["content_status"]
+          thumbnail: string | null
+          updated_at: string
+        }
+        Insert: {
+          application_deadline?: string | null
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          duration?: string | null
+          eligibility?: string | null
+          featured?: boolean
+          id?: string
+          mode?: string
+          name: string
+          program_type?: string
+          seats?: number | null
+          skills?: string[]
+          slug: string
+          sort_order?: number
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["content_status"]
+          thumbnail?: string | null
+          updated_at?: string
+        }
+        Update: {
+          application_deadline?: string | null
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          duration?: string | null
+          eligibility?: string | null
+          featured?: boolean
+          id?: string
+          mode?: string
+          name?: string
+          program_type?: string
+          seats?: number | null
+          skills?: string[]
+          slug?: string
+          sort_order?: number
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["content_status"]
+          thumbnail?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      learning_resources: {
+        Row: {
+          category: string | null
+          content: string | null
+          created_at: string
+          description: string | null
+          difficulty: string
+          id: string
+          resource_type: string
+          slug: string
+          sort_order: number
+          status: Database["public"]["Enums"]["content_status"]
+          thumbnail: string | null
+          title: string
+          updated_at: string
+          url: string | null
+        }
+        Insert: {
+          category?: string | null
+          content?: string | null
+          created_at?: string
+          description?: string | null
+          difficulty?: string
+          id?: string
+          resource_type?: string
+          slug: string
+          sort_order?: number
+          status?: Database["public"]["Enums"]["content_status"]
+          thumbnail?: string | null
+          title: string
+          updated_at?: string
+          url?: string | null
+        }
+        Update: {
+          category?: string | null
+          content?: string | null
+          created_at?: string
+          description?: string | null
+          difficulty?: string
+          id?: string
+          resource_type?: string
+          slug?: string
+          sort_order?: number
+          status?: Database["public"]["Enums"]["content_status"]
+          thumbnail?: string | null
+          title?: string
+          updated_at?: string
+          url?: string | null
         }
         Relationships: []
       }
