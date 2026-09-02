@@ -26,7 +26,6 @@ import { Route as StartProjectRouteImport } from './routes/start-project'
 import { Route as TechnologiesRouteImport } from './routes/technologies'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
-import { Route as ApiTmpMediaExportRouteImport } from './routes/api/tmp-media-export'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as PortfolioIndexRouteImport } from './routes/portfolio.index'
@@ -133,11 +132,6 @@ const TermsRoute = TermsRouteImport.update({
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
   path: '/admin/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiTmpMediaExportRoute = ApiTmpMediaExportRouteImport.update({
-  id: '/api/tmp-media-export',
-  path: '/api/tmp-media-export',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
@@ -281,7 +275,6 @@ export interface FileRoutesByFullPath {
   '/technologies': typeof TechnologiesRoute
   '/terms': typeof TermsRoute
   '/admin/login': typeof AdminLoginRoute
-  '/api/tmp-media-export': typeof ApiTmpMediaExportRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
@@ -323,7 +316,6 @@ export interface FileRoutesByTo {
   '/technologies': typeof TechnologiesRoute
   '/terms': typeof TermsRoute
   '/admin/login': typeof AdminLoginRoute
-  '/api/tmp-media-export': typeof ApiTmpMediaExportRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
@@ -367,7 +359,6 @@ export interface FileRoutesById {
   '/technologies': typeof TechnologiesRoute
   '/terms': typeof TermsRoute
   '/admin/login': typeof AdminLoginRoute
-  '/api/tmp-media-export': typeof ApiTmpMediaExportRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
@@ -411,7 +402,6 @@ export interface FileRouteTypes {
     | '/technologies'
     | '/terms'
     | '/admin/login'
-    | '/api/tmp-media-export'
     | '/blog/$slug'
     | '/portfolio/$slug'
     | '/services/$slug'
@@ -453,7 +443,6 @@ export interface FileRouteTypes {
     | '/technologies'
     | '/terms'
     | '/admin/login'
-    | '/api/tmp-media-export'
     | '/blog/$slug'
     | '/portfolio/$slug'
     | '/services/$slug'
@@ -496,7 +485,6 @@ export interface FileRouteTypes {
     | '/technologies'
     | '/terms'
     | '/admin/login'
-    | '/api/tmp-media-export'
     | '/blog/$slug'
     | '/portfolio/$slug'
     | '/services/$slug'
@@ -540,7 +528,6 @@ export interface RootRouteChildren {
   TechnologiesRoute: typeof TechnologiesRoute
   TermsRoute: typeof TermsRoute
   AdminLoginRoute: typeof AdminLoginRoute
-  ApiTmpMediaExportRoute: typeof ApiTmpMediaExportRoute
   BlogSlugRoute: typeof BlogSlugRoute
   PortfolioSlugRoute: typeof PortfolioSlugRoute
   ServicesSlugRoute: typeof ServicesSlugRoute
@@ -668,13 +655,6 @@ declare module '@tanstack/react-router' {
       path: '/admin/login'
       fullPath: '/admin/login'
       preLoaderRoute: typeof AdminLoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/tmp-media-export': {
-      id: '/api/tmp-media-export'
-      path: '/api/tmp-media-export'
-      fullPath: '/api/tmp-media-export'
-      preLoaderRoute: typeof ApiTmpMediaExportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/blog/': {
@@ -902,7 +882,6 @@ const rootRouteChildren: RootRouteChildren = {
   TechnologiesRoute: TechnologiesRoute,
   TermsRoute: TermsRoute,
   AdminLoginRoute: AdminLoginRoute,
-  ApiTmpMediaExportRoute: ApiTmpMediaExportRoute,
   BlogSlugRoute: BlogSlugRoute,
   PortfolioSlugRoute: PortfolioSlugRoute,
   ServicesSlugRoute: ServicesSlugRoute,
