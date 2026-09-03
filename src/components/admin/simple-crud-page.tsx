@@ -140,8 +140,9 @@ export function SimpleCrudPage({ config }: { config: CrudConfig }) {
     ]);
   }
 
-  return (
-    <AdminShell title={config.title} breadcrumb={`Admin / ${config.title}`}>
+  const content = (
+    <>
+
       <div className="space-y-4">
         <AdminToolbar
           search={search}
