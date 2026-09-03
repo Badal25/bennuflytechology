@@ -38,6 +38,8 @@ export type CrudConfig = {
   filterKey?: string;
   filterOptions?: string[];
   extraColumns?: { key: string; label: string; render?: (row: any) => React.ReactNode }[];
+  embedded?: boolean;
+
 };
 
 function emptyForm(fields: FieldDef[]) {
@@ -140,8 +142,9 @@ export function SimpleCrudPage({ config }: { config: CrudConfig }) {
     ]);
   }
 
-  return (
-    <AdminShell title={config.title} breadcrumb={`Admin / ${config.title}`}>
+  const content = (
+    <>
+
       <div className="space-y-4">
         <AdminToolbar
           search={search}
@@ -293,6 +296,14 @@ export function SimpleCrudPage({ config }: { config: CrudConfig }) {
           setDeleteTarget(null);
         }}
       />
+    </>
+  );
+
+  if (config.embedded) return content;
+  return (
+    <AdminShell title={config.title} breadcrumb={`Admin / ${config.title}`}>
+      {content}
     </AdminShell>
   );
+
 }
