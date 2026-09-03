@@ -294,6 +294,14 @@ export function SimpleCrudPage({ config }: { config: CrudConfig }) {
           setDeleteTarget(null);
         }}
       />
+    </>
+  );
+
+  if (config.embedded) return content;
+  return (
+    <AdminShell title={config.title} breadcrumb={`Admin / ${config.title}`}>
+      {content}
     </AdminShell>
   );
+
 }
