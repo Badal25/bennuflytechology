@@ -38,6 +38,8 @@ export type CrudConfig = {
   filterKey?: string;
   filterOptions?: string[];
   extraColumns?: { key: string; label: string; render?: (row: any) => React.ReactNode }[];
+  embedded?: boolean;
+
 };
 
 function emptyForm(fields: FieldDef[]) {
