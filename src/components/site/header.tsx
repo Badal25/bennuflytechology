@@ -85,13 +85,7 @@ export function SiteHeader() {
               </Link>
             ))}
             <Link
-              to="/learning"
-              onClick={() => setOpen(false)}
-              className="border-b border-hairline py-4 font-display text-lg font-semibold"
-            >
-              Learning &amp; Internships
-            </Link>
-            <Link
+
               to="/start-project"
               onClick={() => setOpen(false)}
               className="mt-6 inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3.5 font-semibold text-primary-foreground"
