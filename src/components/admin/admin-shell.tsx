@@ -22,6 +22,8 @@ import {
   ShieldAlert,
   BarChart3,
   Loader2,
+  GraduationCap,
+
 } from "lucide-react";
 import { Wordmark } from "@/components/brand/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
