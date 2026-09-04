@@ -35,7 +35,7 @@ export function SiteHeader() {
         <Wordmark compact={scrolled} />
 
         <div className="flex items-center gap-2">
-          <nav className="mr-2 hidden items-center gap-1 xl:flex">
+          <nav className="mr-1 hidden items-center gap-0.5 xl:flex">
             {NAV_LINKS.map((l) => (
               <Link
                 key={l.to}
@@ -43,10 +43,11 @@ export function SiteHeader() {
                 activeOptions={{ exact: l.to === "/" }}
                 activeProps={{ className: "text-foreground" }}
                 inactiveProps={{ className: "text-muted-foreground" }}
-                className="rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:text-foreground"
+                className="rounded-lg px-2.5 py-2 text-[13px] font-medium whitespace-nowrap transition-colors hover:text-foreground"
               >
                 {l.label}
               </Link>
+
             ))}
           </nav>
 
@@ -85,13 +86,7 @@ export function SiteHeader() {
               </Link>
             ))}
             <Link
-              to="/learning"
-              onClick={() => setOpen(false)}
-              className="border-b border-hairline py-4 font-display text-lg font-semibold"
-            >
-              Learning &amp; Internships
-            </Link>
-            <Link
+
               to="/start-project"
               onClick={() => setOpen(false)}
               className="mt-6 inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3.5 font-semibold text-primary-foreground"

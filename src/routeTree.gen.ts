@@ -39,6 +39,7 @@ import { Route as AuthenticatedAdminFaqsRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAdminIndustriesRouteImport } from './routes/_authenticated/admin/industries'
 import { Route as AuthenticatedAdminJobsRouteImport } from './routes/_authenticated/admin/jobs'
 import { Route as AuthenticatedAdminLeadsRouteImport } from './routes/_authenticated/admin/leads'
+import { Route as AuthenticatedAdminLearningRouteImport } from './routes/_authenticated/admin/learning'
 import { Route as AuthenticatedAdminMediaRouteImport } from './routes/_authenticated/admin/media'
 import { Route as AuthenticatedAdminNewsletterRouteImport } from './routes/_authenticated/admin/newsletter'
 import { Route as AuthenticatedAdminPortfolioRouteImport } from './routes/_authenticated/admin/portfolio'
@@ -201,6 +202,12 @@ const AuthenticatedAdminLeadsRoute = AuthenticatedAdminLeadsRouteImport.update({
   path: '/admin/leads',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminLearningRoute =
+  AuthenticatedAdminLearningRouteImport.update({
+    id: '/admin/learning',
+    path: '/admin/learning',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminMediaRoute = AuthenticatedAdminMediaRouteImport.update({
   id: '/admin/media',
   path: '/admin/media',
@@ -287,6 +294,7 @@ export interface FileRoutesByFullPath {
   '/admin/industries': typeof AuthenticatedAdminIndustriesRoute
   '/admin/jobs': typeof AuthenticatedAdminJobsRoute
   '/admin/leads': typeof AuthenticatedAdminLeadsRoute
+  '/admin/learning': typeof AuthenticatedAdminLearningRoute
   '/admin/media': typeof AuthenticatedAdminMediaRoute
   '/admin/newsletter': typeof AuthenticatedAdminNewsletterRoute
   '/admin/portfolio': typeof AuthenticatedAdminPortfolioRoute
@@ -328,6 +336,7 @@ export interface FileRoutesByTo {
   '/admin/industries': typeof AuthenticatedAdminIndustriesRoute
   '/admin/jobs': typeof AuthenticatedAdminJobsRoute
   '/admin/leads': typeof AuthenticatedAdminLeadsRoute
+  '/admin/learning': typeof AuthenticatedAdminLearningRoute
   '/admin/media': typeof AuthenticatedAdminMediaRoute
   '/admin/newsletter': typeof AuthenticatedAdminNewsletterRoute
   '/admin/portfolio': typeof AuthenticatedAdminPortfolioRoute
@@ -371,6 +380,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/industries': typeof AuthenticatedAdminIndustriesRoute
   '/_authenticated/admin/jobs': typeof AuthenticatedAdminJobsRoute
   '/_authenticated/admin/leads': typeof AuthenticatedAdminLeadsRoute
+  '/_authenticated/admin/learning': typeof AuthenticatedAdminLearningRoute
   '/_authenticated/admin/media': typeof AuthenticatedAdminMediaRoute
   '/_authenticated/admin/newsletter': typeof AuthenticatedAdminNewsletterRoute
   '/_authenticated/admin/portfolio': typeof AuthenticatedAdminPortfolioRoute
@@ -414,6 +424,7 @@ export interface FileRouteTypes {
     | '/admin/industries'
     | '/admin/jobs'
     | '/admin/leads'
+    | '/admin/learning'
     | '/admin/media'
     | '/admin/newsletter'
     | '/admin/portfolio'
@@ -455,6 +466,7 @@ export interface FileRouteTypes {
     | '/admin/industries'
     | '/admin/jobs'
     | '/admin/leads'
+    | '/admin/learning'
     | '/admin/media'
     | '/admin/newsletter'
     | '/admin/portfolio'
@@ -497,6 +509,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/industries'
     | '/_authenticated/admin/jobs'
     | '/_authenticated/admin/leads'
+    | '/_authenticated/admin/learning'
     | '/_authenticated/admin/media'
     | '/_authenticated/admin/newsletter'
     | '/_authenticated/admin/portfolio'
@@ -748,6 +761,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminLeadsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/learning': {
+      id: '/_authenticated/admin/learning'
+      path: '/admin/learning'
+      fullPath: '/admin/learning'
+      preLoaderRoute: typeof AuthenticatedAdminLearningRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/media': {
       id: '/_authenticated/admin/media'
       path: '/admin/media'
@@ -828,6 +848,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminIndustriesRoute: typeof AuthenticatedAdminIndustriesRoute
   AuthenticatedAdminJobsRoute: typeof AuthenticatedAdminJobsRoute
   AuthenticatedAdminLeadsRoute: typeof AuthenticatedAdminLeadsRoute
+  AuthenticatedAdminLearningRoute: typeof AuthenticatedAdminLearningRoute
   AuthenticatedAdminMediaRoute: typeof AuthenticatedAdminMediaRoute
   AuthenticatedAdminNewsletterRoute: typeof AuthenticatedAdminNewsletterRoute
   AuthenticatedAdminPortfolioRoute: typeof AuthenticatedAdminPortfolioRoute
@@ -848,6 +869,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminIndustriesRoute: AuthenticatedAdminIndustriesRoute,
   AuthenticatedAdminJobsRoute: AuthenticatedAdminJobsRoute,
   AuthenticatedAdminLeadsRoute: AuthenticatedAdminLeadsRoute,
+  AuthenticatedAdminLearningRoute: AuthenticatedAdminLearningRoute,
   AuthenticatedAdminMediaRoute: AuthenticatedAdminMediaRoute,
   AuthenticatedAdminNewsletterRoute: AuthenticatedAdminNewsletterRoute,
   AuthenticatedAdminPortfolioRoute: AuthenticatedAdminPortfolioRoute,

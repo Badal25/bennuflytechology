@@ -22,6 +22,8 @@ import {
   ShieldAlert,
   BarChart3,
   Loader2,
+  GraduationCap,
+
 } from "lucide-react";
 import { Wordmark } from "@/components/brand/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -55,6 +57,8 @@ const NAV_ITEMS: NavItem[] = [
   { to: "/admin/industries", label: "Industries", icon: Building2, roles: ["super_admin", "content_manager"] },
   { to: "/admin/jobs", label: "Jobs", icon: UserSquare2, roles: ["super_admin", "hr"] },
   { to: "/admin/applications", label: "Applications", icon: FileText, roles: ["super_admin", "hr"] },
+  { to: "/admin/learning", label: "Learning & Internships", icon: GraduationCap, roles: ["super_admin", "hr", "content_manager"] },
+
   { to: "/admin/leads", label: "Leads", icon: BarChart3, roles: ["super_admin", "sales"] },
   { to: "/admin/blogs", label: "Blogs", icon: Newspaper, roles: ["super_admin", "content_manager"] },
   { to: "/admin/testimonials", label: "Testimonials", icon: MessageSquareQuote, roles: ["super_admin", "content_manager"] },
