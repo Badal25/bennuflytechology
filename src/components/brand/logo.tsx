@@ -1,9 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import markAsset from "@/assets/bennufly-mark.png.asset.json";
-import lockupAsset from "@/assets/bennufly-lockup.png.asset.json";
 
-export const BENNUFLY_MARK = markAsset.url;
-export const BENNUFLY_LOCKUP = lockupAsset.url;
+export const BENNUFLY_MARK = "/assets/bennufly-mark.png";
+export const BENNUFLY_LOCKUP = "/assets/bennufly-lockup.png";
 
 export function LogoMark({ className = "size-9" }: { className?: string }) {
   return (
