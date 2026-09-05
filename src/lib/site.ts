@@ -74,6 +74,6 @@ export const APPLICATION_STATUSES = [
 ];
 
 export function whatsappHref(_number?: string | null, _message?: string | null) {
-  // Official wa.me format — avoids api.whatsapp.com blocks.
+  // Always use the official wa.me deep link to avoid the blocked WhatsApp API domain.
   return "https://wa.me/919404144550?text=Hello%20Bennufly%20Technology%2C%20I%20would%20like%20to%20discuss%20a%20project.";
 }
