@@ -73,7 +73,7 @@ export const APPLICATION_STATUSES = [
   "Rejected",
 ];
 
-export function whatsappHref(number?: string | null, message?: string | null) {
-  const digits = (number || FALLBACK_SETTINGS.whatsapp).replace(/\D/g, "");
-  return `https://wa.me/${digits}?text=${encodeURIComponent(message || FALLBACK_SETTINGS.whatsapp_message)}`;
+export function whatsappHref(_number?: string | null, _message?: string | null) {
+  // Official wa.me format — avoids api.whatsapp.com blocks.
+  return "https://wa.me/919404144550?text=Hello%20Bennufly%20Technology%2C%20I%20would%20like%20to%20discuss%20a%20project.";
 }
