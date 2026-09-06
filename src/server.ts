@@ -9,6 +9,34 @@ type ServerEntry = {
 
 let serverEntryPromise: Promise<ServerEntry> | undefined;
 
+const SERVER_ENV_BINDINGS = [
+  "SUPABASE_URL",
+  "SUPABASE_PUBLISHABLE_KEY",
+  "SUPABASE_SERVICE_ROLE_KEY",
+] as const;
+
+/**
+ * Cloudflare passes Worker variables to fetch() as env bindings. The Node
+ * process.env compatibility object is not populated unless a separate
+ * compatibility flag is enabled, while the generated Supabase integration
+ * reads process.env inside server handlers. Copy only the bindings used by
+ * the server into that compatibility object before loading the app entry.
+ *
+ * Existing process.env values win so Lovable Cloud and local builds keep
+ * their current environment-injection behavior.
+ */
+function bindWorkerEnvironment(env: unknown): void {
+  if (!env || typeof env !== "object") return;
+
+  for (const name of SERVER_ENV_BINDINGS) {
+    if (process.env[name]) continue;
+    const value = Reflect.get(env, name);
+    if (typeof value === "string" && value.length > 0) {
+      process.env[name] = value;
+    }
+  }
+}
+
 async function getServerEntry(): Promise<ServerEntry> {
   if (!serverEntryPromise) {
     serverEntryPromise = import("@tanstack/react-start/server-entry").then(
@@ -47,6 +75,7 @@ function isH3SwallowedErrorBody(body: string): boolean {
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
+      bindWorkerEnvironment(env);
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);
