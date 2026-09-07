@@ -76,25 +76,45 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
+    // meta: [
+    //   { charSet: "utf-8" },
+    //   { name: "viewport", content: "width=device-width, initial-scale=1" },
+    //   { title: "Bennufly Technology — Building Ideas. Engineering the Future." },
+    //   {
+    //     name: "description",
+    //     content:
+    //       "Bennufly Technology Pvt. Ltd. builds modern software, AI solutions, mobile apps and digital products.",
+    //   },
+    //   { name: "author", content: "Bennufly Technology Pvt. Ltd." },
+    //   { property: "og:title", content: "Bennufly Technology" },
+    //   {
+    //     property: "og:description",
+    //     content:
+    //       "Bennufly Technology Pvt. Ltd. builds modern software, AI solutions, mobile apps and digital products.",
+    //   },
+    //   { property: "og:type", content: "website" },
+    //   { name: "twitter:card", content: "summary_large_image" },
+    // ],
     meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Bennufly Technology — Building Ideas. Engineering the Future." },
-      {
-        name: "description",
-        content:
-          "Bennufly Technology Pvt. Ltd. builds modern software, AI solutions, mobile apps and digital products.",
-      },
-      { name: "author", content: "Bennufly Technology Pvt. Ltd." },
-      { property: "og:title", content: "Bennufly Technology" },
-      {
-        property: "og:description",
-        content:
-          "Bennufly Technology Pvt. Ltd. builds modern software, AI solutions, mobile apps and digital products.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
+  { charSet: "utf-8" },
+  { name: "viewport", content: "width=device-width, initial-scale=1" },
+  { title: "Bennufly Technology — Building Ideas. Engineering the Future." },
+  {
+    name: "description",
+    content:
+      "Bennufly Technology Pvt. Ltd. builds modern software, AI solutions, mobile apps and digital products.",
+  },
+  { name: "author", content: "Bennufly Technology Pvt. Ltd." },
+  { property: "og:title", content: "Bennufly Technology" },
+  {
+    property: "og:description",
+    content:
+      "Bennufly Technology Pvt. Ltd. builds modern software, AI solutions, mobile apps and digital products.",
+  },
+  { property: "og:type", content: "website" },
+  { property: "og:site_name", content: "Bennufly Technology" },
+  { name: "twitter:card", content: "summary_large_image" },
+],
     scripts: [
       {
         type: "application/ld+json",
@@ -120,15 +140,27 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           ],
         }),
       },
+      // {
+      //   type: "application/ld+json",
+      //   children: JSON.stringify({
+      //     "@context": "https://schema.org",
+      //     "@type": "WebSite",
+      //     name: "Bennufly Technology",
+      //     inLanguage: "en",
+      //   }),
+      // },
+
       {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebSite",
-          name: "Bennufly Technology",
-          inLanguage: "en",
-        }),
-      },
+  type: "application/ld+json",
+  children: JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Bennufly Technology",
+    alternateName: ["Bennufly", "Bennufly Technologies"],
+    url: "https://bennufly.wb-techofficial.workers.dev/",
+    inLanguage: "en",
+  }),
+},
     ],
     links: [
       {
