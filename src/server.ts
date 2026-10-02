@@ -25,12 +25,27 @@ const SERVER_ENV_BINDINGS = [
  * Existing process.env values win so Lovable Cloud and local builds keep
  * their current environment-injection behavior.
  */
-function bindWorkerEnvironment(env: unknown): void {
-  if (!env || typeof env !== "object") return;
+function resolveWorkerEnv(request: Request, env: unknown): object | undefined {
+  // The Cloudflare module handler stores bindings on globalThis.__env__ and on
+  // request.runtime.cloudflare.env, then calls this entry with the request only.
+  const candidates: unknown[] = [
+    env,
+    (request as { runtime?: { cloudflare?: { env?: unknown } } }).runtime?.cloudflare?.env,
+    (globalThis as { __env__?: unknown }).__env__,
+  ];
+  for (const candidate of candidates) {
+    if (candidate && typeof candidate === "object") return candidate;
+  }
+  return undefined;
+}
+
+function bindWorkerEnvironment(request: Request, env: unknown): void {
+  const source = resolveWorkerEnv(request, env);
+  if (!source) return;
 
   for (const name of SERVER_ENV_BINDINGS) {
     if (process.env[name]) continue;
-    const value = Reflect.get(env, name);
+    const value = Reflect.get(source, name);
     if (typeof value === "string" && value.length > 0) {
       process.env[name] = value;
     }
@@ -75,7 +90,7 @@ function isH3SwallowedErrorBody(body: string): boolean {
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
-      bindWorkerEnvironment(env);
+      bindWorkerEnvironment(request, env);
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);
