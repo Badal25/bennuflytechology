@@ -107,6 +107,71 @@ export type Database = {
         }
         Relationships: []
       }
+      certificates: {
+        Row: {
+          application_id: string | null
+          certificate_id: string
+          created_at: string
+          domain: string | null
+          duration: string | null
+          end_date: string | null
+          id: string
+          issue_date: string
+          notes: string | null
+          performance: string | null
+          program_name: string
+          recipient_email: string | null
+          recipient_name: string
+          start_date: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          application_id?: string | null
+          certificate_id: string
+          created_at?: string
+          domain?: string | null
+          duration?: string | null
+          end_date?: string | null
+          id?: string
+          issue_date?: string
+          notes?: string | null
+          performance?: string | null
+          program_name: string
+          recipient_email?: string | null
+          recipient_name: string
+          start_date?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          application_id?: string | null
+          certificate_id?: string
+          created_at?: string
+          domain?: string | null
+          duration?: string | null
+          end_date?: string | null
+          id?: string
+          issue_date?: string
+          notes?: string | null
+          performance?: string | null
+          program_name?: string
+          recipient_email?: string | null
+          recipient_name?: string
+          start_date?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificates_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "internship_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       faqs: {
         Row: {
           answer: string
@@ -178,6 +243,7 @@ export type Database = {
       }
       internship_applications: {
         Row: {
+          application_number: string | null
           college: string | null
           course: string | null
           created_at: string
@@ -200,6 +266,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          application_number?: string | null
           college?: string | null
           course?: string | null
           created_at?: string
@@ -222,6 +289,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          application_number?: string | null
           college?: string | null
           course?: string | null
           created_at?: string
@@ -1247,6 +1315,33 @@ export type Database = {
           _timeline: string
         }
         Returns: undefined
+      }
+      track_internship_application: {
+        Args: { _application_number: string; _email: string }
+        Returns: {
+          application_number: string
+          first_name: string
+          interested_domain: string
+          program_name: string
+          status: string
+          submitted_at: string
+          updated_at: string
+        }[]
+      }
+      verify_certificate: {
+        Args: { _certificate_id: string }
+        Returns: {
+          certificate_id: string
+          domain: string
+          duration: string
+          end_date: string
+          issue_date: string
+          performance: string
+          program_name: string
+          recipient_name: string
+          start_date: string
+          status: string
+        }[]
       }
     }
     Enums: {
