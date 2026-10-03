@@ -25,6 +25,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as StartProjectRouteImport } from './routes/start-project'
 import { Route as TechnologiesRouteImport } from './routes/technologies'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
@@ -128,6 +129,11 @@ const TechnologiesRoute = TechnologiesRouteImport.update({
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifyRoute = VerifyRouteImport.update({
+  id: '/verify',
+  path: '/verify',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
@@ -281,6 +287,7 @@ export interface FileRoutesByFullPath {
   '/start-project': typeof StartProjectRoute
   '/technologies': typeof TechnologiesRoute
   '/terms': typeof TermsRoute
+  '/verify': typeof VerifyRoute
   '/admin/login': typeof AdminLoginRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
@@ -323,6 +330,7 @@ export interface FileRoutesByTo {
   '/start-project': typeof StartProjectRoute
   '/technologies': typeof TechnologiesRoute
   '/terms': typeof TermsRoute
+  '/verify': typeof VerifyRoute
   '/admin/login': typeof AdminLoginRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
@@ -367,6 +375,7 @@ export interface FileRoutesById {
   '/start-project': typeof StartProjectRoute
   '/technologies': typeof TechnologiesRoute
   '/terms': typeof TermsRoute
+  '/verify': typeof VerifyRoute
   '/admin/login': typeof AdminLoginRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
@@ -411,6 +420,7 @@ export interface FileRouteTypes {
     | '/start-project'
     | '/technologies'
     | '/terms'
+    | '/verify'
     | '/admin/login'
     | '/blog/$slug'
     | '/portfolio/$slug'
@@ -453,6 +463,7 @@ export interface FileRouteTypes {
     | '/start-project'
     | '/technologies'
     | '/terms'
+    | '/verify'
     | '/admin/login'
     | '/blog/$slug'
     | '/portfolio/$slug'
@@ -496,6 +507,7 @@ export interface FileRouteTypes {
     | '/start-project'
     | '/technologies'
     | '/terms'
+    | '/verify'
     | '/admin/login'
     | '/blog/$slug'
     | '/portfolio/$slug'
@@ -540,6 +552,7 @@ export interface RootRouteChildren {
   StartProjectRoute: typeof StartProjectRoute
   TechnologiesRoute: typeof TechnologiesRoute
   TermsRoute: typeof TermsRoute
+  VerifyRoute: typeof VerifyRoute
   AdminLoginRoute: typeof AdminLoginRoute
   BlogSlugRoute: typeof BlogSlugRoute
   PortfolioSlugRoute: typeof PortfolioSlugRoute
@@ -661,6 +674,13 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verify': {
+      id: '/verify'
+      path: '/verify'
+      fullPath: '/verify'
+      preLoaderRoute: typeof VerifyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/login': {
@@ -903,6 +923,7 @@ const rootRouteChildren: RootRouteChildren = {
   StartProjectRoute: StartProjectRoute,
   TechnologiesRoute: TechnologiesRoute,
   TermsRoute: TermsRoute,
+  VerifyRoute: VerifyRoute,
   AdminLoginRoute: AdminLoginRoute,
   BlogSlugRoute: BlogSlugRoute,
   PortfolioSlugRoute: PortfolioSlugRoute,
