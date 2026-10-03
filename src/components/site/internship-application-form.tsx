@@ -48,7 +48,7 @@ export function InternshipApplicationForm({
   const [file, setFile] = useState<File | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
-  const [done, setDone] = useState(false);
+  const [done, setDone] = useState<string | null>(null);
   const guard = useSpamGuard("internship-application");
 
   function set(key: string, v: string) {
@@ -99,7 +99,11 @@ export function InternshipApplicationForm({
       if (upErr) throw upErr;
 
       const d = parsed.data;
+      const newId = crypto.randomUUID();
+      const appNumber = `BNF-APP-${newId.replace(/-/g, "").slice(0, 8).toUpperCase()}`;
       const { error } = await supabase.from("internship_applications").insert({
+        id: newId,
+        application_number: appNumber,
         program_id: program?.id ?? null,
         program_name: program?.name ?? null,
         full_name: d.full_name,
@@ -118,7 +122,7 @@ export function InternshipApplicationForm({
       });
       if (error) throw error;
 
-      setDone(true);
+      setDone(appNumber);
       guard.markSubmitted();
       toast.success("Application submitted successfully.");
       onDone?.();
@@ -133,9 +137,23 @@ export function InternshipApplicationForm({
     return (
       <div className="rounded-2xl border border-hairline bg-card p-8 text-center">
         <p className="font-display text-lg font-semibold">Application submitted successfully.</p>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Our team will review your application and contact you if shortlisted.
+        <p className="mt-3 text-sm text-muted-foreground">Your application ID</p>
+        <p className="mt-1 font-mono text-xl font-semibold text-brand">{done}</p>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Save this ID. Use it with your email to track your application status anytime.
         </p>
+        <div className="mt-4 flex justify-center gap-2">
+          <button
+            type="button"
+            className="rounded-lg border border-hairline px-3 py-2 text-sm"
+            onClick={() => navigator.clipboard.writeText(done)}
+          >
+            Copy ID
+          </button>
+          <a href={`/verify?tab=application&app=${done}`} className="rounded-lg bg-primary px-3 py-2 text-sm text-primary-foreground">
+            Track status
+          </a>
+        </div>
       </div>
     );
   }

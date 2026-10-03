@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { toast } from "sonner";
-import { Eye, FileDown } from "lucide-react";
+import { Award, Eye, FileDown } from "lucide-react";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { AdminToolbar, AdminListState } from "@/components/admin/admin-list";
 import { ConfirmDialog } from "@/components/admin/confirm-dialog";
@@ -110,6 +110,36 @@ const categoryConfig: CrudConfig = {
   ],
 };
 
+const certificateConfig: CrudConfig = {
+  title: "Certificates",
+  table: "certificates",
+  titleKey: "recipient_name",
+  embedded: true,
+  searchKeys: ["certificate_id", "recipient_name", "recipient_email", "program_name"],
+  filterKey: "status",
+  filterOptions: ["valid", "revoked"],
+  extraColumns: [
+    { key: "certificate_id", label: "Certificate ID" },
+    { key: "program_name", label: "Program" },
+    { key: "issue_date", label: "Issued" },
+    { key: "status", label: "Status" },
+  ],
+  fields: [
+    { key: "recipient_name", label: "Recipient Name", type: "text", required: true },
+    { key: "recipient_email", label: "Recipient Email", type: "text" },
+    { key: "program_name", label: "Program Name", type: "text", required: true },
+    { key: "domain", label: "Domain", type: "text" },
+    { key: "duration", label: "Duration", type: "text", hint: "e.g. 8 weeks" },
+    { key: "start_date", label: "Start Date", type: "date" },
+    { key: "end_date", label: "End Date", type: "date" },
+    { key: "issue_date", label: "Issue Date", type: "date" },
+    { key: "performance", label: "Performance / Grade", type: "text" },
+    { key: "status", label: "Status", type: "select", options: ["valid", "revoked"], required: true },
+    { key: "certificate_id", label: "Certificate ID", type: "text", hint: "Leave empty to auto-generate (BNF-CERT-YYYY-XXXXXX)" },
+    { key: "notes", label: "Internal Notes", type: "textarea" },
+  ],
+};
+
 function LearningAdminPage() {
   const { isSuperAdmin, roles } = useAuth();
   const canContent = isSuperAdmin || roles.includes("content_manager");
@@ -124,7 +154,13 @@ function LearningAdminPage() {
           {canHr && <TabsTrigger value="applications">Applications</TabsTrigger>}
           {canContent && <TabsTrigger value="resources">Learning Resources</TabsTrigger>}
           {canContent && <TabsTrigger value="categories">Categories</TabsTrigger>}
+          {canHr && <TabsTrigger value="certificates">Certificates</TabsTrigger>}
         </TabsList>
+        {canHr && (
+          <TabsContent value="certificates">
+            <SimpleCrudPage config={certificateConfig} />
+          </TabsContent>
+        )}
 
         {canContent && (
           <TabsContent value="programs">
@@ -159,7 +195,7 @@ function InternshipApplications() {
   const programsQuery = useQuery({
     queryKey: ["learning_programs-lite"],
     queryFn: async () => {
-      const { data, error: e } = await supabase.from("learning_programs").select("id, name");
+      const { data, error: e } = await supabase.from("learning_programs").select("id, name, duration");
       if (e) throw new Error(e.message);
       return data ?? [];
     },
@@ -182,7 +218,7 @@ function InternshipApplications() {
       items.filter((r) => {
         const s = search.trim().toLowerCase();
         const matchesSearch =
-          !s || [r.full_name, r.email, r.college].some((v) => String(v ?? "").toLowerCase().includes(s));
+          !s || [r.full_name, r.email, r.college, r.application_number].some((v) => String(v ?? "").toLowerCase().includes(s));
         const created = new Date(r.created_at).getTime();
         const afterFrom = !from || created >= new Date(`${from}T00:00:00`).getTime();
         const beforeTo = !to || created <= new Date(`${to}T23:59:59`).getTime();
@@ -197,6 +233,35 @@ function InternshipApplications() {
     [items, search, status, program, from, to],
   );
 
+  async function issueCertificate(row: any) {
+    const { data: existing } = await (supabase.from as any)("certificates")
+      .select("certificate_id").eq("application_id", row.id).maybeSingle();
+    if (existing) {
+      toast.info(`Certificate already issued: ${existing.certificate_id}`);
+      return;
+    }
+    const prog = (programsQuery.data ?? []).find((p: any) => p.id === row.program_id) as any;
+    const { data, error: e } = await (supabase.from as any)("certificates")
+      .insert({
+        application_id: row.id,
+        recipient_name: row.full_name,
+        recipient_email: row.email,
+        program_name: programName(row),
+        domain: row.interested_domain,
+        duration: prog?.duration ?? null,
+        status: "valid",
+      })
+      .select("certificate_id")
+      .single();
+    if (e) {
+      toast.error(e.message);
+      return;
+    }
+    if (row.status !== "Completed") await update({ id: row.id, values: { status: "Completed" } });
+    navigator.clipboard?.writeText(`${window.location.origin}/verify?cert=${data.certificate_id}`);
+    toast.success(`Certificate ${data.certificate_id} issued. Verification link copied.`);
+  }
+
   async function openResume(path: string) {
     const { data, error: e } = await supabase.storage.from("resumes").createSignedUrl(path, 60);
     if (e || !data) {
@@ -208,7 +273,7 @@ function InternshipApplications() {
 
   return (
     <div className="space-y-4">
-      <AdminToolbar search={search} onSearch={setSearch} placeholder="Search name, email or college...">
+      <AdminToolbar search={search} onSearch={setSearch} placeholder="Search name, email, college or application ID...">
         <Select value={status} onValueChange={setStatus}>
           <SelectTrigger className="w-44"><SelectValue /></SelectTrigger>
           <SelectContent>
@@ -251,6 +316,7 @@ function InternshipApplications() {
                 <TableRow key={r.id}>
                   <TableCell>
                     <p className="font-medium text-foreground">{r.full_name}</p>
+                    {r.application_number && <p className="font-mono text-[11px] text-brand">{r.application_number}</p>}
                     <p className="text-xs text-muted-foreground">
                       {r.email}
                       {r.phone ? ` · ${r.phone}` : ""}
@@ -306,7 +372,15 @@ function InternshipApplications() {
           <SheetHeader><SheetTitle>{selected?.full_name}</SheetTitle></SheetHeader>
           {selected && (
             <div className="space-y-4 p-4 text-sm">
-              <Badge variant="secondary">{selected.status}</Badge>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant="secondary">{selected.status}</Badge>
+                {selected.application_number && <Badge variant="outline">{selected.application_number}</Badge>}
+              </div>
+              {(selected.status === "Completed" || selected.status === "Active") && (
+                <Button size="sm" variant="outline" onClick={() => issueCertificate(selected)}>
+                  <Award className="mr-1 size-3.5" /> Issue certificate
+                </Button>
+              )}
               <Detail label="Email" value={selected.email} />
               <Detail label="Phone" value={selected.phone} />
               <Detail label="College / University" value={selected.college} />
