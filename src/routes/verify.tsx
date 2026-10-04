@@ -79,7 +79,7 @@ type Cert = {
   status: string;
 };
 
-function CertificateVerifier({ initial }: { initial?: string }) {
+function CertificateVerifier({ initial }: { initial?: string | undefined }) {
   const [id, setId] = useState(initial ?? "");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<Cert | null | undefined>(undefined);
@@ -227,7 +227,7 @@ const NEXT_STEPS: Record<string, string> = {
   Rejected: "Thank you for applying. We are unable to move forward this time — you are welcome to apply for future programs.",
 };
 
-function ApplicationTracker({ initial }: { initial?: string }) {
+function ApplicationTracker({ initial }: { initial?: string | undefined }) {
   const [num, setNum] = useState(initial ?? "");
   const [email, setEmail] = useState("");
   const [busy, setBusy] = useState(false);
