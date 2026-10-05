@@ -186,9 +186,31 @@ function BlogDetail() {
               {String(post.content ?? "")
                 .split(/\n{2,}/)
                 .filter(Boolean)
-                .map((para: string, i: number) => (
-                  <p key={i}>{para}</p>
-                ))}
+                .map((para: string, i: number) => {
+                  const t = para.trim();
+                  if (t.startsWith("## "))
+                    return (
+                      <h2 key={i} className="pt-6 font-display text-2xl font-semibold tracking-tight text-foreground">
+                        {t.slice(3)}
+                      </h2>
+                    );
+                  if (t.startsWith("### "))
+                    return (
+                      <h3 key={i} className="pt-3 text-lg font-semibold text-foreground">
+                        {t.slice(4)}
+                      </h3>
+                    );
+                  const lines = t.split("\n");
+                  if (lines.every((l) => l.trim().startsWith("- ")))
+                    return (
+                      <ul key={i} className="list-disc space-y-2 pl-5">
+                        {lines.map((l, j) => (
+                          <li key={j}>{l.trim().slice(2)}</li>
+                        ))}
+                      </ul>
+                    );
+                  return <p key={i}>{t}</p>;
+                })}
             </div>
 
             {!!(post.tags ?? []).length && (
