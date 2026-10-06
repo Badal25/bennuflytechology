@@ -227,6 +227,16 @@ const NEXT_STEPS: Record<string, string> = {
   Rejected: "Thank you for applying. We are unable to move forward this time — you are welcome to apply for future programs.",
 };
 
+const JOB_STAGES = ["Submitted", "Shortlisted", "Interview", "Selected"];
+const JOB_STAGES_KEYS = ["NEW", "SHORTLISTED", "INTERVIEW", "SELECTED"];
+const JOB_NEXT: Record<string, string> = {
+  NEW: "We have received your job application. Our hiring team will review it shortly.",
+  SHORTLISTED: "You have been shortlisted. Our team will contact you to schedule an interview.",
+  INTERVIEW: "Your interview stage is in progress. Watch your email and phone for updates.",
+  SELECTED: "Congratulations! You have been selected. Our HR team will share the offer details.",
+  REJECTED: "Thank you for applying. We are unable to move forward this time — you are welcome to apply for future roles.",
+};
+
 function ApplicationTracker({ initial }: { initial?: string | undefined }) {
   const [num, setNum] = useState(initial ?? "");
   const [email, setEmail] = useState("");
@@ -272,7 +282,7 @@ function ApplicationTracker({ initial }: { initial?: string | undefined }) {
   return (
     <div className="space-y-6">
       <form onSubmit={run} className="surface-panel grid gap-3 rounded-2xl p-5 sm:grid-cols-[1fr_1fr_auto]">
-        <input className={inputClass} placeholder="Application ID (BNF-APP-...)" maxLength={20} value={num} onChange={(e) => setNum(e.target.value)} aria-label="Application ID" />
+        <input className={inputClass} placeholder="Application ID (BNF-APP-... / BNF-JOB-...)" maxLength={20} value={num} onChange={(e) => setNum(e.target.value)} aria-label="Application ID" />
         <input type="email" className={inputClass} placeholder="Email used to apply" maxLength={255} value={email} onChange={(e) => setEmail(e.target.value)} aria-label="Email" />
         <Button type="submit" disabled={busy}>
           <Search className="mr-2 size-4" /> {busy ? "Checking..." : "Track"}
@@ -301,13 +311,13 @@ function ApplicationTracker({ initial }: { initial?: string | undefined }) {
             {result.application_number} · Applied {formatDate(result.submitted_at)} · Updated {formatDate(result.updated_at)}
           </p>
 
-          {result.status === "Rejected" ? (
+          {isRejected ? (
             <div className="mt-6 rounded-xl border border-hairline bg-surface p-4 text-sm">
               <span className="font-semibold">Status: Not selected</span>
             </div>
           ) : (
             <ol className="mt-6 space-y-3">
-              {STAGES.map((s, i) => {
+              {stages.map((s, i) => {
                 const done = i <= idx;
                 return (
                   <li key={s} className="flex items-center gap-3 text-sm">
@@ -321,7 +331,7 @@ function ApplicationTracker({ initial }: { initial?: string | undefined }) {
           )}
           <div className="mt-6 rounded-xl border border-hairline bg-surface p-4 text-sm">
             <p className="font-semibold">Next steps</p>
-            <p className="mt-1 text-muted-foreground">{NEXT_STEPS[result.status] ?? "Our team will contact you with updates."}</p>
+            <p className="mt-1 text-muted-foreground">{nextStep ?? "Our team will contact you with updates."}</p>
           </div>
         </div>
       )}
