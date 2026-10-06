@@ -227,6 +227,16 @@ const NEXT_STEPS: Record<string, string> = {
   Rejected: "Thank you for applying. We are unable to move forward this time — you are welcome to apply for future programs.",
 };
 
+const JOB_STAGES = ["Submitted", "Shortlisted", "Interview", "Selected"];
+const JOB_STAGES_KEYS = ["NEW", "SHORTLISTED", "INTERVIEW", "SELECTED"];
+const JOB_NEXT: Record<string, string> = {
+  NEW: "We have received your job application. Our hiring team will review it shortly.",
+  SHORTLISTED: "You have been shortlisted. Our team will contact you to schedule an interview.",
+  INTERVIEW: "Your interview stage is in progress. Watch your email and phone for updates.",
+  SELECTED: "Congratulations! You have been selected. Our HR team will share the offer details.",
+  REJECTED: "Thank you for applying. We are unable to move forward this time — you are welcome to apply for future roles.",
+};
+
 function ApplicationTracker({ initial }: { initial?: string | undefined }) {
   const [num, setNum] = useState(initial ?? "");
   const [email, setEmail] = useState("");
@@ -238,7 +248,7 @@ function ApplicationTracker({ initial }: { initial?: string | undefined }) {
     e.preventDefault();
     const parsed = z
       .object({
-        num: z.string().trim().regex(/^BNF-APP-[A-Z0-9]{8}$/i, "Enter your application ID, e.g. BNF-APP-1A2B3C4D"),
+        num: z.string().trim().regex(/^BNF-(APP|JOB)-[A-Z0-9]{8}$/i, "Enter your application ID, e.g. BNF-APP-1A2B3C4D or BNF-JOB-1A2B3C4D"),
         email: z.string().trim().email("Enter the email used in your application").max(255),
       })
       .safeParse({ num, email });
@@ -248,24 +258,31 @@ function ApplicationTracker({ initial }: { initial?: string | undefined }) {
     }
     setErr("");
     setBusy(true);
-    const { data, error } = await (supabase.rpc as any)("track_internship_application", {
-      _application_number: parsed.data.num,
-      _email: parsed.data.email,
-    });
+    const job = /^BNF-JOB-/i.test(parsed.data.num);
+    const { data, error } = await (supabase.rpc as any)(
+      job ? "track_job_application" : "track_internship_application",
+      { _application_number: parsed.data.num, _email: parsed.data.email },
+    );
     setBusy(false);
     if (error) {
       setErr("Tracking is unavailable right now. Please try again.");
       return;
     }
-    setResult(((data as Track[]) ?? [])[0] ?? null);
+    const row = ((data as any[]) ?? [])[0];
+    setIsJob(job);
+    setResult(row ? (job ? { ...row, program_name: row.position_title, interested_domain: null } : row) : null);
   }
 
-  const idx = result ? stageIndex(result.status) : -1;
+  const [isJob, setIsJob] = useState(false);
+  const stages = isJob ? JOB_STAGES : STAGES;
+  const idx = result ? (isJob ? JOB_STAGES_KEYS.indexOf(result.status) : stageIndex(result.status)) : -1;
+  const isRejected = result?.status === "Rejected" || result?.status === "REJECTED";
+  const nextStep = result ? (isJob ? JOB_NEXT[result.status] : NEXT_STEPS[result.status]) : "";
 
   return (
     <div className="space-y-6">
       <form onSubmit={run} className="surface-panel grid gap-3 rounded-2xl p-5 sm:grid-cols-[1fr_1fr_auto]">
-        <input className={inputClass} placeholder="Application ID (BNF-APP-...)" maxLength={20} value={num} onChange={(e) => setNum(e.target.value)} aria-label="Application ID" />
+        <input className={inputClass} placeholder="Application ID (BNF-APP-... / BNF-JOB-...)" maxLength={20} value={num} onChange={(e) => setNum(e.target.value)} aria-label="Application ID" />
         <input type="email" className={inputClass} placeholder="Email used to apply" maxLength={255} value={email} onChange={(e) => setEmail(e.target.value)} aria-label="Email" />
         <Button type="submit" disabled={busy}>
           <Search className="mr-2 size-4" /> {busy ? "Checking..." : "Track"}
@@ -294,13 +311,13 @@ function ApplicationTracker({ initial }: { initial?: string | undefined }) {
             {result.application_number} · Applied {formatDate(result.submitted_at)} · Updated {formatDate(result.updated_at)}
           </p>
 
-          {result.status === "Rejected" ? (
+          {isRejected ? (
             <div className="mt-6 rounded-xl border border-hairline bg-surface p-4 text-sm">
               <span className="font-semibold">Status: Not selected</span>
             </div>
           ) : (
             <ol className="mt-6 space-y-3">
-              {STAGES.map((s, i) => {
+              {stages.map((s, i) => {
                 const done = i <= idx;
                 return (
                   <li key={s} className="flex items-center gap-3 text-sm">
@@ -314,7 +331,7 @@ function ApplicationTracker({ initial }: { initial?: string | undefined }) {
           )}
           <div className="mt-6 rounded-xl border border-hairline bg-surface p-4 text-sm">
             <p className="font-semibold">Next steps</p>
-            <p className="mt-1 text-muted-foreground">{NEXT_STEPS[result.status] ?? "Our team will contact you with updates."}</p>
+            <p className="mt-1 text-muted-foreground">{nextStep ?? "Our team will contact you with updates."}</p>
           </div>
         </div>
       )}

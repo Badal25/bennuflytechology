@@ -8,6 +8,13 @@
       "when": 1791008508702,
       "tag": "0000_verify_portal",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791276380092,
+      "tag": "0001_job_application_tracking",
+      "breakpoints": true
     }
   ]
 }

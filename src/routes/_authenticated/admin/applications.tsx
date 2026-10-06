@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { toast } from "sonner";
-import { FileDown, Eye } from "lucide-react";
+import { FileDown, Eye, Download } from "lucide-react";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { AdminToolbar, AdminListState } from "@/components/admin/admin-list";
 import { ConfirmDialog } from "@/components/admin/confirm-dialog";
@@ -52,7 +52,7 @@ function ApplicationsPage() {
         const s = search.toLowerCase();
         const matches =
           !s ||
-          [r.full_name, r.email, r.phone, r.position].some((v) => String(v ?? "").toLowerCase().includes(s));
+          [r.full_name, r.email, r.phone, r.position, r.application_number].some((v) => String(v ?? "").toLowerCase().includes(s));
         return (
           matches &&
           (status === "all" || r.status === status) &&
@@ -61,6 +61,36 @@ function ApplicationsPage() {
       }),
     [items, search, status, job],
   );
+
+  function exportExcel() {
+    const cols: [string, (r: any) => unknown][] = [
+      ["Application ID", (r) => r.application_number],
+      ["Full Name", (r) => r.full_name],
+      ["Email", (r) => r.email],
+      ["Phone", (r) => r.phone],
+      ["Applied Job", (r) => (r.job_id ? jobTitle(r.job_id) : r.position)],
+      ["Location", (r) => r.location],
+      ["Experience", (r) => r.experience],
+      ["Education", (r) => r.education],
+      ["Skills", (r) => r.skills],
+      ["LinkedIn", (r) => r.linkedin_url],
+      ["GitHub", (r) => r.github_url],
+      ["Portfolio", (r) => r.portfolio_url],
+      ["Status", (r) => r.status],
+      ["Applied Date", (r) => format(new Date(r.created_at), "yyyy-MM-dd HH:mm")],
+      ["Cover Letter", (r) => r.cover_letter],
+      ["Internal Notes", (r) => r.internal_notes],
+    ];
+    const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+    const csv = [cols.map((c) => esc(c[0])).join(","), ...filtered.map((r) => cols.map((c) => esc(c[1](r))).join(","))].join("\r\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `bennufly-job-applications-${format(new Date(), "yyyy-MM-dd")}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast.success(`Exported ${filtered.length} applications`);
+  }
 
   async function openResume(path: string) {
     const { data, error: e } = await supabase.storage.from("resumes").createSignedUrl(path, 60);
@@ -74,7 +104,7 @@ function ApplicationsPage() {
   return (
     <AdminShell title="Applications" breadcrumb="Admin / Applications">
       <div className="space-y-4">
-        <AdminToolbar search={search} onSearch={setSearch} placeholder="Search candidates...">
+        <AdminToolbar search={search} onSearch={setSearch} placeholder="Search candidates or ID...">
           <Select value={status} onValueChange={setStatus}>
             <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
             <SelectContent>
@@ -89,6 +119,9 @@ function ApplicationsPage() {
               {(jobsQuery.data ?? []).map((j) => <SelectItem key={j.id} value={j.id}>{j.title}</SelectItem>)}
             </SelectContent>
           </Select>
+          <Button variant="outline" onClick={exportExcel} disabled={filtered.length === 0}>
+            <Download className="mr-1 size-4" /> Export to Excel
+          </Button>
         </AdminToolbar>
 
         <AdminListState loading={isLoading} error={error as Error | null} empty={!isLoading && filtered.length === 0} emptyLabel="No applications yet" />
@@ -112,6 +145,7 @@ function ApplicationsPage() {
                     <TableCell>
                       <p className="font-medium text-foreground">{r.full_name}</p>
                       <p className="text-xs text-muted-foreground">{r.email}{r.phone ? ` · ${r.phone}` : ""}</p>
+                      {r.application_number && <p className="font-mono text-xs text-brand">{r.application_number}</p>}
                     </TableCell>
                     <TableCell className="text-sm">{r.job_id ? jobTitle(r.job_id) : r.position || "—"}</TableCell>
                     <TableCell className="text-sm text-muted-foreground">{r.experience || "—"}</TableCell>

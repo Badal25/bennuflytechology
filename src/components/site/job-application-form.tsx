@@ -30,6 +30,7 @@ export function JobApplicationForm({ job, onDone }: { job: Job; onDone?: () => v
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
+  const [appNumber, setAppNumber] = useState("");
   const guard = useSpamGuard("job-application");
 
   function set(key: string, v: string) {
@@ -82,7 +83,10 @@ export function JobApplicationForm({ job, onDone }: { job: Job; onDone?: () => v
       }
 
       const d = parsed.data;
+      const id = crypto.randomUUID();
+      const number = "BNF-JOB-" + id.replace(/-/g, "").slice(0, 8).toUpperCase();
       const { error } = await supabase.from("job_applications").insert({
+        id,
         job_id: job?.id ?? null,
         position: job?.title ?? values["position"] ?? null,
         full_name: d.full_name,
@@ -100,6 +104,7 @@ export function JobApplicationForm({ job, onDone }: { job: Job; onDone?: () => v
       });
       if (error) throw error;
 
+      setAppNumber(number);
       setDone(true);
       guard.markSubmitted();
       toast.success("Application submitted successfully. Our team will review your application.");
@@ -116,8 +121,28 @@ export function JobApplicationForm({ job, onDone }: { job: Job; onDone?: () => v
       <div className="rounded-2xl border border-hairline bg-card p-8 text-center">
         <p className="font-display text-lg font-semibold">Application submitted successfully.</p>
         <p className="mt-2 text-sm text-muted-foreground">
-          Our team will review your application.
+          Our team will review your application. Save your Application ID to track its status.
         </p>
+        {appNumber && (
+          <>
+            <p className="mt-4 font-mono text-lg font-semibold text-brand">{appNumber}</p>
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
+              <button
+                type="button"
+                className="rounded-full border border-hairline px-4 py-2 text-sm"
+                onClick={() => { navigator.clipboard?.writeText(appNumber); toast.success("Application ID copied"); }}
+              >
+                Copy ID
+              </button>
+              <a
+                href={`/verify?tab=application&app=${appNumber}`}
+                className="rounded-full bg-primary px-4 py-2 text-sm text-primary-foreground"
+              >
+                Track status
+              </a>
+            </div>
+          </>
+        )}
       </div>
     );
   }

@@ -323,6 +323,7 @@ export type Database = {
       }
       job_applications: {
         Row: {
+          application_number: string | null
           cover_letter: string | null
           created_at: string
           education: string | null
@@ -345,6 +346,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          application_number?: string | null
           cover_letter?: string | null
           created_at?: string
           education?: string | null
@@ -367,6 +369,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          application_number?: string | null
           cover_letter?: string | null
           created_at?: string
           education?: string | null
@@ -1323,6 +1326,17 @@ export type Database = {
           first_name: string
           interested_domain: string
           program_name: string
+          status: string
+          submitted_at: string
+          updated_at: string
+        }[]
+      }
+      track_job_application: {
+        Args: { _application_number: string; _email: string }
+        Returns: {
+          application_number: string
+          first_name: string
+          position_title: string
           status: string
           submitted_at: string
           updated_at: string
