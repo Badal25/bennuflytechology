@@ -238,7 +238,7 @@ function ApplicationTracker({ initial }: { initial?: string | undefined }) {
     e.preventDefault();
     const parsed = z
       .object({
-        num: z.string().trim().regex(/^BNF-APP-[A-Z0-9]{8}$/i, "Enter your application ID, e.g. BNF-APP-1A2B3C4D"),
+        num: z.string().trim().regex(/^BNF-(APP|JOB)-[A-Z0-9]{8}$/i, "Enter your application ID, e.g. BNF-APP-1A2B3C4D or BNF-JOB-1A2B3C4D"),
         email: z.string().trim().email("Enter the email used in your application").max(255),
       })
       .safeParse({ num, email });
@@ -248,19 +248,26 @@ function ApplicationTracker({ initial }: { initial?: string | undefined }) {
     }
     setErr("");
     setBusy(true);
-    const { data, error } = await (supabase.rpc as any)("track_internship_application", {
-      _application_number: parsed.data.num,
-      _email: parsed.data.email,
-    });
+    const job = /^BNF-JOB-/i.test(parsed.data.num);
+    const { data, error } = await (supabase.rpc as any)(
+      job ? "track_job_application" : "track_internship_application",
+      { _application_number: parsed.data.num, _email: parsed.data.email },
+    );
     setBusy(false);
     if (error) {
       setErr("Tracking is unavailable right now. Please try again.");
       return;
     }
-    setResult(((data as Track[]) ?? [])[0] ?? null);
+    const row = ((data as any[]) ?? [])[0];
+    setIsJob(job);
+    setResult(row ? (job ? { ...row, program_name: row.position_title, interested_domain: null } : row) : null);
   }
 
-  const idx = result ? stageIndex(result.status) : -1;
+  const [isJob, setIsJob] = useState(false);
+  const stages = isJob ? JOB_STAGES : STAGES;
+  const idx = result ? (isJob ? JOB_STAGES_KEYS.indexOf(result.status) : stageIndex(result.status)) : -1;
+  const isRejected = result?.status === "Rejected" || result?.status === "REJECTED";
+  const nextStep = result ? (isJob ? JOB_NEXT[result.status] : NEXT_STEPS[result.status]) : "";
 
   return (
     <div className="space-y-6">
