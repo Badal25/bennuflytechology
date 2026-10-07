@@ -1,7 +1,42 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { z } from "zod";
-import { BadgeCheck, CheckCircle2, Circle, Printer, Search, ShieldAlert, XCircle } from "lucide-react";
+import { BadgeCheck, CheckCircle2, Circle, Copy, Download, Linkedin, Printer, Search, ShieldAlert, XCircle } from "lucide-react";
+import QRCode from "qrcode";
+
+function certUrl(id: string) {
+  return `${window.location.origin}/verify?tab=certificate&cert=${encodeURIComponent(id)}`;
+}
+
+function linkedInUrl(c: { certificate_id: string; program_name: string; issue_date?: string | null }) {
+  const d = c.issue_date ? new Date(c.issue_date) : null;
+  const p = new URLSearchParams({
+    startTask: "CERTIFICATION_NAME",
+    name: c.program_name,
+    organizationName: "Bennufly Technology Pvt. Ltd.",
+    certId: c.certificate_id,
+    certUrl: certUrl(c.certificate_id),
+  });
+  if (d && !isNaN(d.getTime())) {
+    p.set("issueYear", String(d.getFullYear()));
+    p.set("issueMonth", String(d.getMonth() + 1));
+  }
+  return `https://www.linkedin.com/profile/add?${p.toString()}`;
+}
+
+function CertQr({ id }: { id: string }) {
+  const [src, setSrc] = useState("");
+  useEffect(() => {
+    QRCode.toDataURL(certUrl(id), { margin: 1, width: 240 }).then(setSrc).catch(() => setSrc(""));
+  }, [id]);
+  if (!src) return null;
+  return (
+    <div className="mt-6 flex items-center gap-4">
+      <img src={src} alt={`QR code to verify certificate ${id}`} className="size-24 rounded-lg bg-background p-1" />
+      <p className="text-xs text-muted-foreground">Scan this QR code to open the official verification page for this certificate.</p>
+    </div>
+  );
+}
 import { SiteShell, PageHero } from "@/components/site/site-shell";
 import { Section } from "@/components/site/primitives";
 import { inputClass } from "@/components/site/form-controls";
@@ -84,6 +119,8 @@ function CertificateVerifier({ initial }: { initial?: string | undefined }) {
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<Cert | null | undefined>(undefined);
   const [err, setErr] = useState("");
+  const [pdfBusy, setPdfBusy] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   async function run(value: string) {
     const v = value.trim().toUpperCase();
@@ -163,7 +200,32 @@ function CertificateVerifier({ initial }: { initial?: string | undefined }) {
             />
             <Item label="Performance" value={result.performance} />
           </dl>
+          <CertQr id={result.certificate_id} />
           <div className="mt-6 flex flex-wrap gap-2 print:hidden">
+            {result.status === "valid" && (
+              <Button
+                size="sm"
+                disabled={pdfBusy}
+                onClick={async () => {
+                  setPdfBusy(true);
+                  try {
+                    const m = await import("@/lib/certificate-pdf");
+                    await m.downloadCertificatePdf(result);
+                  } finally {
+                    setPdfBusy(false);
+                  }
+                }}
+              >
+                <Download className="mr-2 size-4" /> {pdfBusy ? "Preparing…" : "Download PDF"}
+              </Button>
+            )}
+            {result.status === "valid" && (
+              <Button variant="outline" size="sm" asChild>
+                <a href={linkedInUrl(result)} target="_blank" rel="noopener noreferrer">
+                  <Linkedin className="mr-2 size-4" /> Add to LinkedIn
+                </a>
+              </Button>
+            )}
             <Button variant="outline" size="sm" onClick={() => window.print()}>
               <Printer className="mr-2 size-4" /> Print
             </Button>
@@ -171,10 +233,12 @@ function CertificateVerifier({ initial }: { initial?: string | undefined }) {
               variant="outline"
               size="sm"
               onClick={() => {
-                navigator.clipboard.writeText(`${window.location.origin}/verify?cert=${result.certificate_id}`);
+                navigator.clipboard.writeText(certUrl(result.certificate_id));
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
               }}
             >
-              Copy verification link
+              <Copy className="mr-2 size-4" /> {copied ? "Link copied" : "Copy verification link"}
             </Button>
           </div>
         </div>
