@@ -74,7 +74,7 @@ export async function downloadCertificatePdf(c: CertificateData) {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(13);
   doc.setTextColor(...navy);
-  doc.text("BENNUFLY TECHNOLOGY PVT. LTD.", W / 2, 45, { align: "center", charSpace: 1 });
+  doc.text("BENNUFLY TECHNOLOGY PVT. LTD.", W / 2, 45, { align: "center" });
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8);
   doc.setTextColor(...muted);
