@@ -66,7 +66,7 @@ export async function downloadCertificatePdf(c: CertificateData) {
   doc.rect(13, 15, W - 26, H - 30);
   // corner accents
   doc.setFillColor(...cyan);
-  [[10, 12], [W - 16, 12], [10, H - 18], [W - 16, H - 18]].forEach(([x, y]) => doc.rect(x, y, 6, 6, "F"));
+  ([[10, 12], [W - 16, 12], [10, H - 18], [W - 16, H - 18]] as const).forEach(([x, y]) => doc.rect(x, y, 6, 6, "F"));
 
   // Logo + company
   const logo = await loadImage("/assets/bennufly-mark.png");
