@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AiLabRouteImport } from './routes/ai-lab'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CareersRouteImport } from './routes/careers'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -27,6 +28,7 @@ import { Route as TechnologiesRouteImport } from './routes/technologies'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as ApiAiLabRouteImport } from './routes/api/ai-lab'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as PortfolioIndexRouteImport } from './routes/portfolio.index'
@@ -64,6 +66,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiLabRoute = AiLabRouteImport.update({
+  id: '/ai-lab',
+  path: '/ai-lab',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -139,6 +146,11 @@ const VerifyRoute = VerifyRouteImport.update({
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
   path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAiLabRoute = ApiAiLabRouteImport.update({
+  id: '/api/ai-lab',
+  path: '/api/ai-lab',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
@@ -274,6 +286,7 @@ const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/ai-lab': typeof AiLabRoute
   '/auth': typeof AuthRoute
   '/careers': typeof CareersRoute
   '/contact': typeof ContactRoute
@@ -289,6 +302,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/verify': typeof VerifyRoute
   '/admin/login': typeof AdminLoginRoute
+  '/api/ai-lab': typeof ApiAiLabRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
@@ -317,6 +331,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/ai-lab': typeof AiLabRoute
   '/auth': typeof AuthRoute
   '/careers': typeof CareersRoute
   '/contact': typeof ContactRoute
@@ -332,6 +347,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/verify': typeof VerifyRoute
   '/admin/login': typeof AdminLoginRoute
+  '/api/ai-lab': typeof ApiAiLabRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
@@ -362,6 +378,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/about': typeof AboutRoute
+  '/ai-lab': typeof AiLabRoute
   '/auth': typeof AuthRoute
   '/careers': typeof CareersRoute
   '/contact': typeof ContactRoute
@@ -377,6 +394,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/verify': typeof VerifyRoute
   '/admin/login': typeof AdminLoginRoute
+  '/api/ai-lab': typeof ApiAiLabRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/portfolio/$slug': typeof PortfolioSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
@@ -407,6 +425,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/ai-lab'
     | '/auth'
     | '/careers'
     | '/contact'
@@ -422,6 +441,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/verify'
     | '/admin/login'
+    | '/api/ai-lab'
     | '/blog/$slug'
     | '/portfolio/$slug'
     | '/services/$slug'
@@ -450,6 +470,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/ai-lab'
     | '/auth'
     | '/careers'
     | '/contact'
@@ -465,6 +486,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/verify'
     | '/admin/login'
+    | '/api/ai-lab'
     | '/blog/$slug'
     | '/portfolio/$slug'
     | '/services/$slug'
@@ -494,6 +516,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/about'
+    | '/ai-lab'
     | '/auth'
     | '/careers'
     | '/contact'
@@ -509,6 +532,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/verify'
     | '/admin/login'
+    | '/api/ai-lab'
     | '/blog/$slug'
     | '/portfolio/$slug'
     | '/services/$slug'
@@ -539,6 +563,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
+  AiLabRoute: typeof AiLabRoute
   AuthRoute: typeof AuthRoute
   CareersRoute: typeof CareersRoute
   ContactRoute: typeof ContactRoute
@@ -554,6 +579,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   VerifyRoute: typeof VerifyRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  ApiAiLabRoute: typeof ApiAiLabRoute
   BlogSlugRoute: typeof BlogSlugRoute
   PortfolioSlugRoute: typeof PortfolioSlugRoute
   ServicesSlugRoute: typeof ServicesSlugRoute
@@ -583,6 +609,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-lab': {
+      id: '/ai-lab'
+      path: '/ai-lab'
+      fullPath: '/ai-lab'
+      preLoaderRoute: typeof AiLabRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -688,6 +721,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/login'
       fullPath: '/admin/login'
       preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/ai-lab': {
+      id: '/api/ai-lab'
+      path: '/api/ai-lab'
+      fullPath: '/api/ai-lab'
+      preLoaderRoute: typeof ApiAiLabRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/blog/': {
@@ -910,6 +950,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
+  AiLabRoute: AiLabRoute,
   AuthRoute: AuthRoute,
   CareersRoute: CareersRoute,
   ContactRoute: ContactRoute,
@@ -925,6 +966,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   VerifyRoute: VerifyRoute,
   AdminLoginRoute: AdminLoginRoute,
+  ApiAiLabRoute: ApiAiLabRoute,
   BlogSlugRoute: BlogSlugRoute,
   PortfolioSlugRoute: PortfolioSlugRoute,
   ServicesSlugRoute: ServicesSlugRoute,
