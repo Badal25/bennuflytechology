@@ -32,7 +32,7 @@ If a section has nothing, say "None found". Keep explanations under 250 words ex
 const LIMITS: Record<string, number> = { support: 800, mvp: 400, code: 4000 };
 
 export async function handleAiLab(request: Request): Promise<Response> {
-  const apiKey = process.env.LOVABLE_API_KEY;
+  const apiKey = process.env["LOVABLE_API_KEY"];
   if (!apiKey) return Response.json({ error: "AI is not configured." }, { status: 500 });
 
   let body: { demo?: string; input?: string };
@@ -45,7 +45,7 @@ export async function handleAiLab(request: Request): Promise<Response> {
   const input = String(body.input ?? "").trim();
   if (!PROMPTS[demo]) return Response.json({ error: "Unknown demo." }, { status: 400 });
   if (!input) return Response.json({ error: "Please enter something to try." }, { status: 400 });
-  if (input.length > LIMITS[demo])
+  if (input.length > (LIMITS[demo] ?? 0))
     return Response.json(
       { error: `Please keep it under ${LIMITS[demo]} characters.` },
       { status: 400 },
