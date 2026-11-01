@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AiLabRouteImport } from './routes/ai-lab'
+import { Route as ArchitectureRouteImport } from './routes/architecture'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CareersRouteImport } from './routes/careers'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -71,6 +72,11 @@ const AboutRoute = AboutRouteImport.update({
 const AiLabRoute = AiLabRouteImport.update({
   id: '/ai-lab',
   path: '/ai-lab',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArchitectureRoute = ArchitectureRouteImport.update({
+  id: '/architecture',
+  path: '/architecture',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -287,6 +293,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/ai-lab': typeof AiLabRoute
+  '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
   '/careers': typeof CareersRoute
   '/contact': typeof ContactRoute
@@ -332,6 +339,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/ai-lab': typeof AiLabRoute
+  '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
   '/careers': typeof CareersRoute
   '/contact': typeof ContactRoute
@@ -379,6 +387,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/about': typeof AboutRoute
   '/ai-lab': typeof AiLabRoute
+  '/architecture': typeof ArchitectureRoute
   '/auth': typeof AuthRoute
   '/careers': typeof CareersRoute
   '/contact': typeof ContactRoute
@@ -426,6 +435,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/ai-lab'
+    | '/architecture'
     | '/auth'
     | '/careers'
     | '/contact'
@@ -471,6 +481,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/ai-lab'
+    | '/architecture'
     | '/auth'
     | '/careers'
     | '/contact'
@@ -517,6 +528,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/about'
     | '/ai-lab'
+    | '/architecture'
     | '/auth'
     | '/careers'
     | '/contact'
@@ -564,6 +576,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
   AiLabRoute: typeof AiLabRoute
+  ArchitectureRoute: typeof ArchitectureRoute
   AuthRoute: typeof AuthRoute
   CareersRoute: typeof CareersRoute
   ContactRoute: typeof ContactRoute
@@ -616,6 +629,13 @@ declare module '@tanstack/react-router' {
       path: '/ai-lab'
       fullPath: '/ai-lab'
       preLoaderRoute: typeof AiLabRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/architecture': {
+      id: '/architecture'
+      path: '/architecture'
+      fullPath: '/architecture'
+      preLoaderRoute: typeof ArchitectureRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -951,6 +971,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
   AiLabRoute: AiLabRoute,
+  ArchitectureRoute: ArchitectureRoute,
   AuthRoute: AuthRoute,
   CareersRoute: CareersRoute,
   ContactRoute: ContactRoute,
