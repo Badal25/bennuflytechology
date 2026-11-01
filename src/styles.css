@@ -259,3 +259,6 @@
     scroll-behavior: auto !important;
   }
 }
+
+@keyframes arch-dash { to { stroke-dashoffset: -24; } }
+.arch-flow { animation: arch-dash 1s linear infinite; }

@@ -27,6 +27,7 @@ const RESOURCES = [
   { to: "/learning", label: "Learning & Internships" },
   { to: "/verify", label: "Verify Certificate" },
   { to: "/ai-lab", label: "AI Demo Lab" },
+  { to: "/architecture", label: "Architecture Visualizer" },
   { to: "/industries", label: "Industries" },
 ] as const;
 
