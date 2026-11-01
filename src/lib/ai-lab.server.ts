@@ -48,6 +48,7 @@ export async function handleAiLab(request: Request): Promise<Response> {
   if (input.length > LIMITS[demo])
     return Response.json({ error: `Please keep it under ${LIMITS[demo]} characters.` }, { status: 400 });
 
+  console.log("[ai-lab] calling gateway", demo);
   let upstream: Response;
   try {
     upstream = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
@@ -73,6 +74,7 @@ export async function handleAiLab(request: Request): Promise<Response> {
     throw e;
   }
 
+  console.log("[ai-lab] gateway status", upstream.status);
   if (!upstream.ok || !upstream.body) {
     const status = upstream.status;
     const msg =
