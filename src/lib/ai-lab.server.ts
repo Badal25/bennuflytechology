@@ -32,7 +32,7 @@ If a section has nothing, say "None found". Keep explanations under 250 words ex
 const LIMITS: Record<string, number> = { support: 800, mvp: 400, code: 4000 };
 
 export async function handleAiLab(request: Request): Promise<Response> {
-  const apiKey = process.env.LOVABLE_API_KEY;
+  const apiKey = process.env["LOVABLE_API_KEY"];
   if (!apiKey) return Response.json({ error: "AI is not configured." }, { status: 500 });
 
   let body: { demo?: string; input?: string };
@@ -45,8 +45,11 @@ export async function handleAiLab(request: Request): Promise<Response> {
   const input = String(body.input ?? "").trim();
   if (!PROMPTS[demo]) return Response.json({ error: "Unknown demo." }, { status: 400 });
   if (!input) return Response.json({ error: "Please enter something to try." }, { status: 400 });
-  if (input.length > LIMITS[demo])
-    return Response.json({ error: `Please keep it under ${LIMITS[demo]} characters.` }, { status: 400 });
+  if (input.length > (LIMITS[demo] ?? 0))
+    return Response.json(
+      { error: `Please keep it under ${LIMITS[demo]} characters.` },
+      { status: 400 },
+    );
 
   let upstream: Response;
   try {
@@ -90,37 +93,46 @@ export async function handleAiLab(request: Request): Promise<Response> {
   const encoder = new TextEncoder();
   let buffer = "";
   const stream = new ReadableStream<Uint8Array>({
-    async pull(controller) {
-      const { done, value } = await reader.read();
-      if (done) {
-        controller.close();
-        return;
-      }
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split("\n");
-      buffer = lines.pop() ?? "";
-      for (const line of lines) {
-        if (!line.startsWith("data:")) continue;
-        const data = line.slice(5).trim();
-        if (!data || data === "[DONE]") continue;
-        try {
-          const evt = JSON.parse(data);
-          if (evt.type === "response.output_text.delta" && evt.delta) {
-            controller.enqueue(encoder.encode(evt.delta));
-          } else if (evt.type === "response.failed" || evt.type === "error") {
-            controller.enqueue(encoder.encode("\n\n_The AI demo stopped unexpectedly. Please try again._"));
+    async start(controller) {
+      try {
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop() ?? "";
+          for (const line of lines) {
+            if (!line.startsWith("data:")) continue;
+            const data = line.slice(5).trim();
+            if (!data || data === "[DONE]") continue;
+            try {
+              const evt = JSON.parse(data);
+              if (evt.type === "response.output_text.delta" && evt.delta) {
+                controller.enqueue(encoder.encode(evt.delta));
+              } else if (evt.type === "response.failed" || evt.type === "error") {
+                controller.enqueue(
+                  encoder.encode("\n\n_The AI demo stopped unexpectedly. Please try again._"),
+                );
+              }
+            } catch {
+              /* ignore partial */
+            }
           }
-        } catch {
-          /* ignore partial */
         }
+      } catch {
+        /* upstream aborted */
       }
+      controller.close();
     },
     cancel() {
       reader.cancel();
     },
   });
 
-  const headers = new Headers({ "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store" });
+  const headers = new Headers({
+    "Content-Type": "text/plain; charset=utf-8",
+    "Cache-Control": "no-store",
+  });
   const runId = upstream.headers.get(RUN_HEADER);
   if (runId) headers.set(RUN_HEADER, runId);
   return new Response(stream, { headers });
