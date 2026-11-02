@@ -112,10 +112,10 @@ const BLUEPRINTS: Blueprint[] = [
 ];
 
 function ArchitecturePage() {
-  const [bpId, setBpId] = useState(BLUEPRINTS[0].id);
+  const [bpId, setBpId] = useState(BLUEPRINTS[0]!.id);
   const bp = BLUEPRINTS.find((b) => b.id === bpId)!;
-  const [selId, setSelId] = useState(bp.nodes[0].id);
-  const sel = bp.nodes.find((n) => n.id === selId) ?? bp.nodes[0];
+  const [selId, setSelId] = useState(bp.nodes[0]!.id);
+  const sel = (bp.nodes.find((n) => n.id === selId) ?? bp.nodes[0])!;
   const pos = (id: string) => bp.nodes.find((n) => n.id === id)!;
   const linked = new Set(bp.edges.filter((e) => e.includes(sel.id)).flat());
 
@@ -133,7 +133,7 @@ function ArchitecturePage() {
             <button
               key={b.id}
               type="button"
-              onClick={() => { setBpId(b.id); setSelId(b.nodes[0].id); }}
+              onClick={() => { setBpId(b.id); setSelId(b.nodes[0]!.id); }}
               className={`surface-panel rounded-2xl p-5 text-left transition ${b.id === bpId ? "ring-2 ring-primary" : "opacity-80 hover:opacity-100"}`}
             >
               <p className="font-semibold">{b.title}</p>
