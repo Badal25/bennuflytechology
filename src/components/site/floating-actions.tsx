@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ReactMarkdown from "react-markdown";
 import { MessageCircle, Bot, X, Send } from "lucide-react";
 import { useSettings } from "@/lib/db";
 import { whatsappHref } from "@/lib/site";
@@ -13,7 +14,7 @@ const LOCAL_ANSWERS: { match: RegExp; answer: string }[] = [
   {
     match: /service|build|develop|software|app|website/i,
     answer:
-      "We build software, websites, mobile apps, AI solutions, SaaS products, UI/UX design, cloud & DevOps, APIs and business automation. The Services page has the full breakdown.",
+      "We build software, websites, mobile apps, AI solutions, SaaS products, UI/UX design, cloud & DevOps, APIs and business automation, digital marketing, email marketing and AI chatbots. The Services page has the full breakdown.",
   },
   {
     match: /intern|student|learn|training/i,
@@ -138,7 +139,13 @@ export function FloatingActions() {
                       : "bg-surface-2 text-foreground"
                   }`}
                 >
-                  {m.text}
+                  {m.role === "bot" ? (
+                    <div className="[&_a]:text-primary [&_a]:underline [&_p]:my-1 [&_ul]:list-disc [&_ul]:pl-4">
+                      <ReactMarkdown>{m.text}</ReactMarkdown>
+                    </div>
+                  ) : (
+                    m.text
+                  )}
                 </div>
               ))}
             </div>
