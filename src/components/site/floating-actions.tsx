@@ -60,22 +60,52 @@ export function FloatingActions() {
     },
   ]);
 
-  function sendMessage(e: React.FormEvent) {
+  const [busy, setBusy] = useState(false);
+
+  function localAnswer(text: string) {
+    return (
+      LOCAL_ANSWERS.find((a) => a.match.test(text))?.answer ??
+      "I don't have that answer yet. The quickest route is our team — email supportbennufly@gmail.com or use the Contact page and we'll reply personally."
+    );
+  }
+
+  async function sendMessage(e: React.FormEvent) {
     e.preventDefault();
     const text = input.trim().slice(0, 500);
-    if (!text) return;
-    const hit = LOCAL_ANSWERS.find((a) => a.match.test(text));
-    setMessages((m) => [
-      ...m,
-      { role: "user", text },
-      {
-        role: "bot",
-        text:
-          hit?.answer ??
-          "I don't have that answer yet. The quickest route is our team — email supportbennufly@gmail.com or use the Contact page and we'll reply personally.",
-      },
-    ]);
+    if (!text || busy) return;
+    const history = [...messages, { role: "user" as const, text }];
+    setMessages([...history, { role: "bot", text: "…" }]);
     setInput("");
+    setBusy(true);
+    const transcript = history
+      .slice(-10)
+      .map((m) => `${m.role === "user" ? "Visitor" : "Assistant"}: ${m.text}`)
+      .join("\n")
+      .slice(-3800);
+    let out = "";
+    const setLast = (t: string) =>
+      setMessages((m) => [...m.slice(0, -1), { role: "bot", text: t }]);
+    try {
+      const res = await fetch("/api/ai-lab", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ demo: "assistant", input: transcript }),
+      });
+      if (!res.ok || !res.body) throw new Error("ai");
+      const reader = res.body.getReader();
+      const dec = new TextDecoder();
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        out += dec.decode(value, { stream: true });
+        setLast(out);
+      }
+      if (!out.trim()) setLast(localAnswer(text));
+    } catch {
+      setLast(out || localAnswer(text));
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
