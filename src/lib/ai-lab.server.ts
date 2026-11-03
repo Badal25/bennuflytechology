@@ -39,9 +39,6 @@ Never invent prices, guarantees, client names or placement promises. For pricing
 const LIMITS: Record<string, number> = { support: 800, mvp: 400, code: 4000, assistant: 4000 };
 
 export async function handleAiLab(request: Request): Promise<Response> {
-  const apiKey = process.env["LOVABLE_API_KEY"];
-  if (!apiKey) return Response.json({ error: "AI is not configured." }, { status: 500 });
-
   let body: { demo?: string; input?: string };
   try {
     body = await request.json();
@@ -57,6 +54,13 @@ export async function handleAiLab(request: Request): Promise<Response> {
       { error: `Please keep it under ${LIMITS[demo]} characters.` },
       { status: 400 },
     );
+
+  const apiKey = process.env["LOVABLE_API_KEY"];
+  if (!apiKey) {
+    const fallback = await providerFallbackResponse(demo, input, request);
+    if (fallback) return fallback;
+    return Response.json({ error: "AI is not configured." }, { status: 500 });
+  }
 
   let upstream: Response;
   try {
