@@ -13,6 +13,14 @@ const SERVER_ENV_BINDINGS = [
   "SUPABASE_URL",
   "SUPABASE_PUBLISHABLE_KEY",
   "SUPABASE_SERVICE_ROLE_KEY",
+  // Direct AI provider keys (used when the Lovable AI key is unavailable,
+  // e.g. on the self-hosted Cloudflare Worker deployment).
+  "OPENAI_API_KEY",
+  "ANTHROPIC_API_KEY",
+  "GOOGLE_API_KEY",
+  "OPENAI_MODEL",
+  "ANTHROPIC_MODEL",
+  "GOOGLE_MODEL",
 ] as const;
 
 /**
