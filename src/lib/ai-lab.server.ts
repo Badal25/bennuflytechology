@@ -164,7 +164,7 @@ async function providerFallbackResponse(
       const cands = data["candidates"] as
         | { content?: { parts?: { text?: string }[] } }[]
         | undefined;
-      text = candidates?.[0]?.content?.parts?.map((p) => p.text ?? "").join("") ?? "";
+      text = cands?.[0]?.content?.parts?.map((p) => p.text ?? "").join("") ?? "";
     }
   } catch {
     return Response.json({ error: "The AI could not respond. Please try again." }, { status: 502 });
