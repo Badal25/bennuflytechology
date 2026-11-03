@@ -58,7 +58,7 @@ function env(name: string): string | undefined {
 }
 
 function pickProvider(): { provider: Provider; key: string } | undefined {
-  const candidates: { provider: Provider; value?: string }[] = [
+  const candidates: { provider: Provider; value?: string | undefined }[] = [
     { provider: "openai", value: env("OPENAI_API_KEY") },
     { provider: "anthropic", value: env("ANTHROPIC_API_KEY") },
     { provider: "google", value: env("GOOGLE_API_KEY") },
@@ -155,13 +155,13 @@ async function providerFallbackResponse(
   try {
     const data = (await upstream.json()) as Record<string, unknown>;
     if (provider === "openai") {
-      const choices = data.choices as { message?: { content?: string } }[] | undefined;
+      const choices = data["choices"] as { message?: { content?: string } }[] | undefined;
       text = choices?.[0]?.message?.content ?? "";
     } else if (provider === "anthropic") {
-      const content = data.content as { type?: string; text?: string }[] | undefined;
+      const content = data["content"] as { type?: string; text?: string }[] | undefined;
       text = content?.map((c) => (c.type === "text" ? c.text ?? "" : "")).join("") ?? "";
     } else {
-      const candidates = data.candidates as
+      const cands = data["candidates"] as
         | { content?: { parts?: { text?: string }[] } }[]
         | undefined;
       text = candidates?.[0]?.content?.parts?.map((p) => p.text ?? "").join("") ?? "";
