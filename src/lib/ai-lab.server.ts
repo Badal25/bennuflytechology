@@ -40,8 +40,10 @@ const LIMITS: Record<string, number> = { support: 800, mvp: 400, code: 4000, ass
 
 // ---------------------------------------------------------------------------
 // Direct provider fallback (self-hosted deployments, e.g. the Cloudflare
-// Worker). Uses whichever provider key is configured in the runtime
+// Worker). Uses whichever provider keys are configured in the runtime
 // environment; the Lovable AI Gateway path above stays primary elsewhere.
+// Tries each configured provider in order and moves to the next one when a
+// provider is out of credits, overloaded or rejects its key.
 // ---------------------------------------------------------------------------
 
 type Provider = "openai" | "anthropic" | "google";
@@ -49,32 +51,104 @@ type Provider = "openai" | "anthropic" | "google";
 const DEFAULT_MODELS: Record<Provider, string> = {
   openai: "gpt-4o-mini",
   anthropic: "claude-haiku-4-5",
-  google: "gemini-2.0-flash",
+  google: "gemini-3.8-flash",
 };
+
+const GENERIC_AI_ERROR = "The AI could not respond. Please try again.";
 
 function env(name: string): string | undefined {
   const value = process.env[name];
   return typeof value === "string" && value.length > 0 ? value : undefined;
 }
 
-function pickProvider(): { provider: Provider; key: string } | undefined {
-  const candidates: { provider: Provider; value?: string | undefined }[] = [
+function listProviders(): { provider: Provider; key: string }[] {
+  const configured: { provider: Provider; value?: string | undefined }[] = [
     { provider: "openai", value: env("OPENAI_API_KEY") },
     { provider: "anthropic", value: env("ANTHROPIC_API_KEY") },
     { provider: "google", value: env("GOOGLE_API_KEY") },
   ];
-  for (const { provider, value } of candidates) {
+  const out: { provider: Provider; key: string }[] = [];
+  for (const { provider, value } of configured) {
     if (!value) continue;
     // Tolerate a key pasted into the "wrong" variable by sniffing its shape.
-    if (provider !== "anthropic" && value.startsWith("sk-ant-"))
-      return { provider: "anthropic", key: value };
-    if (provider !== "google" && value.startsWith("AIza"))
-      return { provider: "google", key: value };
-    if (provider === "google" && value.startsWith("sk-"))
-      return { provider: value.startsWith("sk-ant-") ? "anthropic" : "openai", key: value };
-    return { provider, key: value };
+    if (provider !== "anthropic" && value.startsWith("sk-ant-")) {
+      out.push({ provider: "anthropic", key: value });
+    } else if (provider !== "google" && value.startsWith("AIza")) {
+      out.push({ provider: "google", key: value });
+    } else if (provider === "google" && value.startsWith("sk-")) {
+      out.push({ provider: value.startsWith("sk-ant-") ? "anthropic" : "openai", key: value });
+    } else {
+      out.push({ provider, key: value });
+    }
   }
-  return undefined;
+  return out;
+}
+
+function buildProviderRequest(
+  provider: Provider,
+  key: string,
+  system: string,
+  input: string,
+): { url: string; headers: Record<string, string>; payload: unknown; extract: (data: Record<string, unknown>) => string } {
+  const modelVar =
+    provider === "openai" ? "OPENAI_MODEL" : provider === "anthropic" ? "ANTHROPIC_MODEL" : "GOOGLE_MODEL";
+  const model = env(modelVar) ?? DEFAULT_MODELS[provider];
+  if (provider === "openai") {
+    return {
+      url: "https://api.openai.com/v1/chat/completions",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+      payload: {
+        model,
+        messages: [
+          { role: "system", content: system },
+          { role: "user", content: input },
+        ],
+        max_completion_tokens: 1600,
+      },
+      extract: (data) => {
+        const choices = data["choices"] as { message?: { content?: string } }[] | undefined;
+        return choices?.[0]?.message?.content ?? "";
+      },
+    };
+  }
+  if (provider === "anthropic") {
+    return {
+      url: "https://api.anthropic.com/v1/messages",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": key,
+        "anthropic-version": "2023-06-01",
+      },
+      payload: { model, max_tokens: 1600, system, messages: [{ role: "user", content: input }] },
+      extract: (data) => {
+        const content = data["content"] as { type?: string; text?: string }[] | undefined;
+        return content?.map((c) => (c.type === "text" ? c.text ?? "" : "")).join("") ?? "";
+      },
+    };
+  }
+  return {
+    url: `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
+    headers: { "Content-Type": "application/json", "x-goog-api-key": key },
+    payload: {
+      systemInstruction: { parts: [{ text: system }] },
+      contents: [{ role: "user", parts: [{ text: input }] }],
+      generationConfig: { maxOutputTokens: 1600, temperature: 0.6 },
+    },
+    extract: (data) => {
+      const candidates = data["candidates"] as
+        | { content?: { parts?: { text?: string }[] } }[]
+        | undefined;
+      return candidates?.[0]?.content?.parts?.map((p) => p.text ?? "").join("") ?? "";
+    },
+  };
+}
+
+function providerErrorMessage(status: number): string {
+  if (status === 429) return "Too many people are trying the AI right now. Please wait a minute and retry.";
+  if (status === 401 || status === 403)
+    return "The AI key was rejected by the provider. Please check the configured key.";
+  if (status === 503) return "The AI is busy right now. Please try again in a moment.";
+  return GENERIC_AI_ERROR;
 }
 
 async function providerFallbackResponse(
@@ -82,99 +156,51 @@ async function providerFallbackResponse(
   input: string,
   request: Request,
 ): Promise<Response | undefined> {
-  const picked = pickProvider();
-  if (!picked) return undefined;
-  const { provider, key } = picked;
+  const providers = listProviders();
+  if (providers.length === 0) return undefined;
   const system = PROMPTS[demo];
-  const modelVar =
-    provider === "openai" ? "OPENAI_MODEL" : provider === "anthropic" ? "ANTHROPIC_MODEL" : "GOOGLE_MODEL";
-  const model = env(modelVar) ?? DEFAULT_MODELS[provider];
 
-  let url: string;
-  let headers: Record<string, string>;
-  let payload: Record<string, unknown>;
-  if (provider === "openai") {
-    url = "https://api.openai.com/v1/chat/completions";
-    headers = { "Content-Type": "application/json", Authorization: `Bearer ${key}` };
-    payload = {
-      model,
-      messages: [
-        { role: "system", content: system },
-        { role: "user", content: input },
-      ],
-      max_completion_tokens: 1600,
-    };
-  } else if (provider === "anthropic") {
-    url = "https://api.anthropic.com/v1/messages";
-    headers = {
-      "Content-Type": "application/json",
-      "x-api-key": key,
-      "anthropic-version": "2023-06-01",
-    };
-    payload = {
-      model,
-      max_tokens: 1600,
-      system,
-      messages: [{ role: "user", content: input }],
-    };
-  } else {
-    url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
-    headers = { "Content-Type": "application/json", "x-goog-api-key": key };
-    payload = {
-      systemInstruction: { parts: [{ text: system }] },
-      contents: [{ role: "user", parts: [{ text: input }] }],
-      generationConfig: { maxOutputTokens: 1600, temperature: 0.6 },
-    };
-  }
-
-  let upstream: Response;
-  try {
-    upstream = await fetch(url, {
-      method: "POST",
-      signal: request.signal,
-      headers,
-      body: JSON.stringify(payload),
-    });
-  } catch (e) {
-    if (request.signal.aborted) return new Response(null, { status: 499 });
-    throw e;
-  }
-
-  if (!upstream.ok) {
-    const status = upstream.status;
-    const msg =
-      status === 429
-        ? "Too many people are trying the AI right now. Please wait a minute and retry."
-        : status === 401 || status === 403
-          ? "The AI key was rejected by the provider. Please check the configured key."
-          : "The AI could not respond. Please try again.";
-    return Response.json({ error: msg }, { status: status === 429 || status === 401 || status === 403 ? status : 502 });
-  }
-
-  let text = "";
-  try {
-    const data = (await upstream.json()) as Record<string, unknown>;
-    if (provider === "openai") {
-      const choices = data["choices"] as { message?: { content?: string } }[] | undefined;
-      text = choices?.[0]?.message?.content ?? "";
-    } else if (provider === "anthropic") {
-      const content = data["content"] as { type?: string; text?: string }[] | undefined;
-      text = content?.map((c) => (c.type === "text" ? c.text ?? "" : "")).join("") ?? "";
-    } else {
-      const cands = data["candidates"] as
-        | { content?: { parts?: { text?: string }[] } }[]
-        | undefined;
-      text = cands?.[0]?.content?.parts?.map((p) => p.text ?? "").join("") ?? "";
+  let lastError: Response | undefined;
+  for (const { provider, key } of providers) {
+    const spec = buildProviderRequest(provider, key, system, input);
+    let upstream: Response;
+    try {
+      upstream = await fetch(spec.url, {
+        method: "POST",
+        signal: request.signal,
+        headers: spec.headers,
+        body: JSON.stringify(spec.payload),
+      });
+    } catch (e) {
+      if (request.signal.aborted) return new Response(null, { status: 499 });
+      throw e;
     }
-  } catch {
-    return Response.json({ error: "The AI could not respond. Please try again." }, { status: 502 });
-  }
-  if (!text.trim())
-    return Response.json({ error: "The AI could not respond. Please try again." }, { status: 502 });
 
-  return new Response(text, {
-    headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store" },
-  });
+    if (!upstream.ok) {
+      const status = upstream.status;
+      lastError = Response.json(
+        { error: providerErrorMessage(status) },
+        { status: status === 429 || status === 401 || status === 403 || status === 503 ? status : 502 },
+      );
+      continue; // billing/auth/overload problem: try the next configured provider
+    }
+
+    let text = "";
+    try {
+      text = spec.extract((await upstream.json()) as Record<string, unknown>);
+    } catch {
+      lastError = Response.json({ error: GENERIC_AI_ERROR }, { status: 502 });
+      continue;
+    }
+    if (!text.trim()) {
+      lastError = Response.json({ error: GENERIC_AI_ERROR }, { status: 502 });
+      continue;
+    }
+    return new Response(text, {
+      headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store" },
+    });
+  }
+  return lastError;
 }
 
 export async function handleAiLab(request: Request): Promise<Response> {
