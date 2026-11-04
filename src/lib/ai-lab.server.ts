@@ -51,7 +51,7 @@ type Provider = "openai" | "anthropic" | "google";
 const DEFAULT_MODELS: Record<Provider, string> = {
   openai: "gpt-4o-mini",
   anthropic: "claude-haiku-4-5",
-  google: "gemini-3.8-flash",
+  google: "gemini-3.5-flash",
 };
 
 const GENERIC_AI_ERROR = "The AI could not respond. Please try again.";
