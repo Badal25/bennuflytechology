@@ -243,16 +243,32 @@ export function TestimonialsSection() {
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {items.map((t, i) => (
         <Reveal key={t.id} delay={i * 50}>
-          <figure className="flex h-full flex-col rounded-2xl border border-hairline bg-card p-6">
-            <Quote className="size-5 text-primary" />
+          <figure className="flex h-full flex-col rounded-2xl border border-hairline bg-card p-6 transition-colors hover:border-primary/40">
+            <div className="flex items-center justify-between">
+              <Quote className="size-5 text-primary" />
+              {t.rating ? (
+                <span className="text-sm tracking-widest text-primary" aria-label={`${t.rating} out of 5`}>
+                  {"★".repeat(Math.min(5, t.rating))}
+                </span>
+              ) : null}
+            </div>
             <blockquote className="mt-4 flex-1 text-sm leading-relaxed text-muted-foreground">
-              {t.message}
+              “{t.message}”
             </blockquote>
-            <figcaption className="mt-5 border-t border-hairline pt-4">
-              <p className="font-display text-sm font-semibold">{t.client_name}</p>
-              <p className="text-xs text-muted-foreground">
-                {[t.designation, t.company].filter(Boolean).join(", ")}
-              </p>
+            <figcaption className="mt-5 flex items-center gap-3 border-t border-hairline pt-4">
+              {t.image ? (
+                <img src={t.image} alt={t.client_name} className="size-10 rounded-full object-cover" loading="lazy" />
+              ) : (
+                <span className="grid size-10 place-items-center rounded-full bg-primary/15 font-display text-sm font-semibold text-primary">
+                  {String(t.client_name).split(" ").map((w: string) => w[0]).slice(0, 2).join("")}
+                </span>
+              )}
+              <div>
+                <p className="font-display text-sm font-semibold">{t.client_name}</p>
+                <p className="text-xs text-muted-foreground">
+                  {[t.designation, t.company].filter(Boolean).join(", ")}
+                </p>
+              </div>
             </figcaption>
           </figure>
         </Reveal>
