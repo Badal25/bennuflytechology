@@ -158,7 +158,7 @@ async function providerFallbackResponse(
 ): Promise<Response | undefined> {
   const providers = listProviders();
   if (providers.length === 0) return undefined;
-  const system = PROMPTS[demo];
+  const system = PROMPTS[demo] ?? "";
 
   let lastError: Response | undefined;
   for (const { provider, key } of providers) {
