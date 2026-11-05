@@ -1,8 +1,8 @@
+
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 
-// TODO: replace with your project URL once a project name or custom domain is set.
 const BASE_URL = "https://official.bennufly.in";
 
 interface SitemapEntry {
@@ -32,6 +32,19 @@ const STATIC_ENTRIES: SitemapEntry[] = [
   { path: "/terms", changefreq: "yearly", priority: "0.3" },
 ];
 
+function escapeXml(value: string): string {
+  return value.replace(/[<>&'"]/g, (char) => {
+    const entities: Record<string, string> = {
+      "<": "&lt;",
+      ">": "&gt;",
+      "&": "&amp;",
+      "'": "&apos;",
+      '"': "&quot;",
+    };
+    return entities[char];
+  });
+}
+
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
@@ -51,38 +64,65 @@ export const Route = createFileRoute("/sitemap.xml")({
             supabase.from("blogs").select("slug").eq("status", "published"),
           ]);
 
-          for (const row of services.data ?? [])
-            entries.push({ path: `/services/${row.slug}`, changefreq: "monthly", priority: "0.7" });
-          for (const row of projects.data ?? [])
-            entries.push({ path: `/portfolio/${row.slug}`, changefreq: "monthly", priority: "0.7" });
-          for (const row of blogs.data ?? [])
-            entries.push({ path: `/blog/${row.slug}`, changefreq: "weekly", priority: "0.6" });
+          for (const row of services.data ?? []) {
+            if (row.slug) {
+              entries.push({
+                path: `/services/${encodeURIComponent(row.slug)}`,
+                changefreq: "monthly",
+                priority: "0.7",
+              });
+            }
+          }
+
+          for (const row of projects.data ?? []) {
+            if (row.slug) {
+              entries.push({
+                path: `/portfolio/${encodeURIComponent(row.slug)}`,
+                changefreq: "monthly",
+                priority: "0.7",
+              });
+            }
+          }
+
+          for (const row of blogs.data ?? []) {
+            if (row.slug) {
+              entries.push({
+                path: `/blog/${encodeURIComponent(row.slug)}`,
+                changefreq: "weekly",
+                priority: "0.6",
+              });
+            }
+          }
         } catch {
           // Fall back to static routes only.
         }
 
-        const urls = entries.map((e) =>
+        const uniqueEntries = Array.from(
+          new Map(entries.map((entry) => [entry.path, entry])).values(),
+        );
+
+        const urls = uniqueEntries.map((entry) =>
           [
-            `  <url>`,
-            `    <loc>${BASE_URL}${e.path}</loc>`,
-            e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
-            e.priority ? `    <priority>${e.priority}</priority>` : null,
-            `  </url>`,
+            "  <url>",
+            `    <loc>${escapeXml(`${BASE_URL}${entry.path}`)}</loc>`,
+            entry.changefreq ? `    <changefreq>${entry.changefreq}</changefreq>` : null,
+            entry.priority ? `    <priority>${entry.priority}</priority>` : null,
+            "  </url>",
           ]
             .filter(Boolean)
             .join("\n"),
         );
 
         const xml = [
-          `<?xml version="1.0" encoding="UTF-8"?>`,
-          `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,
+          '<?xml version="1.0" encoding="UTF-8"?>',
+          '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
           ...urls,
-          `</urlset>`,
+          "</urlset>",
         ].join("\n");
 
         return new Response(xml, {
           headers: {
-            "Content-Type": "application/xml",
+            "Content-Type": "application/xml; charset=utf-8",
             "Cache-Control": "public, max-age=3600",
           },
         });
