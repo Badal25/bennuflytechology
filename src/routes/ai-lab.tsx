@@ -12,6 +12,7 @@ const D =
   "Try Bennufly's live AI demos: a customer-support agent simulator, a product idea to MVP architecture generator, and an AI code reviewer.";
 
 export const Route = createFileRoute("/ai-lab")({
+  
   head: () => ({
     meta: [
       { title: T },
@@ -19,9 +20,17 @@ export const Route = createFileRoute("/ai-lab")({
       { property: "og:title", content: T },
       { property: "og:description", content: D },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://official.bennufly.in/ai-lab" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [
+      {
+        rel: "canonical",
+        href: "https://official.bennufly.in/ai-lab",
+      },
+    ],
   }),
+
   component: AiLabPage,
 });
 
