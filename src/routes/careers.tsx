@@ -18,10 +18,10 @@ export const Route = createFileRoute("/careers")({
       { property: "og:title", content: T },
       { property: "og:description", content: D },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/careers" },
+      { property: "og:url", content: "https://official.bennufly.in/careers" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/careers" }],
+    links: [   {     rel: "canonical",     href: "https://official.bennufly.in/careers",   }, ],
   }),
   component: CareersPage,
 });
