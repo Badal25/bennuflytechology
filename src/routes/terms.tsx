@@ -28,7 +28,7 @@ const SECTIONS = [
   ["Job applications", "Submitting an application does not guarantee an interview or offer. Applications are reviewed at our discretion."],
   ["Limitation of liability", "We work to keep information accurate and the site available, but we are not liable for indirect or consequential losses arising from use of this website."],
   ["Governing law", "These terms are governed by the laws of India, with jurisdiction in Nagpur, Maharashtra."],
-  ["Contact", "Questions about these terms can be sent to supportbennufly@gmail.com."],
+  ["Contact", "Questions about these terms can be sent to support@bennufly.in."],
 ];
 
 function TermsPage() {

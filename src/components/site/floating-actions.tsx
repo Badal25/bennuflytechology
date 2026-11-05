@@ -29,7 +29,7 @@ const LOCAL_ANSWERS: { match: RegExp; answer: string }[] = [
   {
     match: /contact|email|phone|reach|call|talk/i,
     answer:
-      "You can reach us at supportbennufly@gmail.com or +91 94041 44550. The Contact page also has a form that reaches our team directly.",
+      "You can reach us at support@bennufly.in or +91 94041 44550. The Contact page also has a form that reaches our team directly.",
   },
   {
     match: /process|timeline|how long|start/i,
@@ -66,7 +66,7 @@ export function FloatingActions() {
   function localAnswer(text: string) {
     return (
       LOCAL_ANSWERS.find((a) => a.match.test(text))?.answer ??
-      "I don't have that answer yet. The quickest route is our team — email supportbennufly@gmail.com or use the Contact page and we'll reply personally."
+      "I don't have that answer yet. The quickest route is our team — email support@bennufly.in or use the Contact page and we'll reply personally."
     );
   }
 

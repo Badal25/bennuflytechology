@@ -125,7 +125,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           description:
             "Software, AI and digital product development company based in Nagpur, Maharashtra, India.",
           foundingDate: "2026",
-          email: "supportbennufly@gmail.com",
+          email: "support@bennufly.in",
           telephone: "+91 94041 44550",
           address: {
             "@type": "PostalAddress",
