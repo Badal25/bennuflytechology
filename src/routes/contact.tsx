@@ -13,7 +13,7 @@ import { useServices } from "@/lib/db";
 import { BUDGETS, TIMELINES, whatsappHref } from "@/lib/site";
 
 const T = "Contact Bennufly Technology";
-const D = "Talk to Bennufly Technology Pvt. Ltd. — IT Park, Nagpur. Email, phone, WhatsApp or send us a project inquiry.";
+const D = "Talk to Bennufly Technology — IT Park, Nagpur. Email, phone, WhatsApp or send us a project inquiry.";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -65,7 +65,7 @@ function ContactPage() {
           <Reveal>
             <div className="space-y-6">
               <div className="rounded-2xl border border-hairline bg-card p-6">
-                <h2 className="font-display text-lg font-semibold">Bennufly Technology Pvt. Ltd.</h2>
+                <h2 className="font-display text-lg font-semibold">Bennufly Technology</h2>
                 <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
                   <li className="flex gap-2.5">
                     <MapPin className="mt-0.5 size-4 shrink-0" />
