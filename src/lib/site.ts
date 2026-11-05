@@ -16,7 +16,7 @@ export const NAV_LINKS = [
 export const FALLBACK_SETTINGS = {
   company_name: "Bennufly Technology Pvt. Ltd.",
   tagline: "Building Ideas. Engineering the Future.",
-  email: "supportbennufly@gmail.com",
+  email: "support@bennufly.in",
   phone: "+91 94041 44550",
   whatsapp: "+919404144550",
   whatsapp_message: "Hello Bennufly Technology, I would like to discuss a project.",

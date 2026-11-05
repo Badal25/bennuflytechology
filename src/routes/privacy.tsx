@@ -27,8 +27,8 @@ const SECTIONS = [
   ["Storage and security", "Data is stored in a managed, access-controlled database. Resumes and uploaded files are stored in private storage and are accessible only to authorised team members."],
   ["Sharing", "We do not sell your personal data. Information is shared only with service providers required to operate this website, or when required by law."],
   ["Retention", "We retain inquiry and application data only as long as needed for the purpose it was collected, or as required by applicable law."],
-  ["Your rights", "You can request access to, correction of, or deletion of your personal data by emailing us at supportbennufly@gmail.com."],
-  ["Contact", "Bennufly Technology Pvt. Ltd., IT Park, Nagpur, Maharashtra, India — supportbennufly@gmail.com."],
+  ["Your rights", "You can request access to, correction of, or deletion of your personal data by emailing us at support@bennufly.in."],
+  ["Contact", "Bennufly Technology Pvt. Ltd., IT Park, Nagpur, Maharashtra, India — support@bennufly.in."],
 ];
 
 function PrivacyPage() {
