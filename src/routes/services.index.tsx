@@ -7,7 +7,7 @@ const T = "Services — Software, Web, Mobile, AI & SaaS | Bennufly Technology";
 const D = "Software development, web and mobile apps, AI & machine learning, SaaS, UI/UX, cloud & DevOps, APIs and business automation.";
 
 export const Route = createFileRoute("/services/")({
-  head: () => ({ meta: [{ title: T }, { name: "description", content: D }, { property: "og:title", content: T }, { property: "og:description", content: D }] }),
+  head: () => ({   meta: [     { title: T },     { name: "description", content: D },     { property: "og:title", content: T },     { property: "og:description", content: D },     {       property: "og:url",       content: "https://official.bennufly.in/services",     },   ],   links: [     {       rel: "canonical",       href: "https://official.bennufly.in/services",     },   ], }),
   component: Services,
 });
 
