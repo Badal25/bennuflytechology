@@ -5,7 +5,7 @@ import { WhyBennufly, FinalCta, TeamSection } from "@/components/site/sections";
 import { MISSION, VISION } from "@/lib/site";
 
 const T = "About Bennufly Technology — Our Story, Mission & Vision";
-const D = "Bennufly Technology Pvt. Ltd. is a technology company founded in 2026 in Nagpur, building software, AI solutions and digital products.";
+const D = "Bennufly Technology is a technology startup founded in 2026 in Nagpur, building software, AI solutions and digital products.";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
