@@ -7,7 +7,7 @@ const T = "Frequently Asked Questions — Bennufly Technology";
 const D = "Answers about Bennufly services, project timelines, international clients, internships and support.";
 
 export const Route = createFileRoute("/faq")({
-  head: () => ({ meta: [{ title: T }, { name: "description", content: D }, { property: "og:title", content: T }, { property: "og:description", content: D }] }),
+  head: () => ({   meta: [     { title: T },     { name: "description", content: D },     { property: "og:title", content: T },     { property: "og:description", content: D },     {       property: "og:url",       content: "https://official.bennufly.in/faq",     },   ],   links: [     {       rel: "canonical",       href: "https://official.bennufly.in/faq",     },   ], }),
   component: Faq,
 });
 
