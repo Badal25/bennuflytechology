@@ -27,6 +27,16 @@ export const Route = createFileRoute("/")({
       { name: "description", content: DESC },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESC },
+      {
+        property: "og:url",
+        content: "https://official.bennufly.in/",
+      },
+    ],
+    links: [
+      {
+        rel: "canonical",
+        href: "https://official.bennufly.in/",
+      },
     ],
   }),
   component: Home,
