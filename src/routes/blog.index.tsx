@@ -17,10 +17,10 @@ export const Route = createFileRoute("/blog/")({
       { property: "og:title", content: T },
       { property: "og:description", content: D },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/blog" },
+      { property: "og:url", content: "https://official.bennufly.in/blog" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/blog" }],
+    links: [   {     rel: "canonical",     href: "https://official.bennufly.in/blog",   }, ],
   }),
   component: BlogIndex,
 });
