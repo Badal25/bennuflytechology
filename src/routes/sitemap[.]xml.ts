@@ -3,7 +3,7 @@ import type {} from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 
 // TODO: replace with your project URL once a project name or custom domain is set.
-const BASE_URL = "https://bennufly.wb-techofficial.workers.dev";
+const BASE_URL = "https://official.bennufly.in";
 
 interface SitemapEntry {
   path: string;
