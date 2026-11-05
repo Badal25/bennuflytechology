@@ -8,9 +8,20 @@ import { useService } from "@/lib/db";
 
 export const Route = createFileRoute("/services/$slug")({
   head: ({ params }) => {
-    const t = `${params.slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())} — Bennufly Technology`;
-    return { meta: [{ title: t }, { name: "description", content: `Bennufly Technology service: ${params.slug.replace(/-/g, " ")}.` }, { property: "og:title", content: t }, { property: "og:description", content: `Bennufly Technology service: ${params.slug.replace(/-/g, " ")}.` }] };
-  },
+  const t = `${params.slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())} — Bennufly Technology`;
+  const url = `https://official.bennufly.in/services/${params.slug}`;
+  return {
+    meta: [
+      { title: t },
+      { name: "description", content: `Bennufly Technology service: ${params.slug.replace(/-/g, " ")}.` },
+      { property: "og:title", content: t },
+      { property: "og:description", content: `Bennufly Technology service: ${params.slug.replace(/-/g, " ")}.` },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: url },
+    ],
+    links: [{ rel: "canonical", href: url }],
+  };
+},
   component: ServiceDetail,
 });
 
