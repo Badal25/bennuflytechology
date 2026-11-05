@@ -7,7 +7,7 @@ const T = "Our Development Process — Bennufly Technology";
 const D = "Discovery, planning, design, development, testing, deployment and support — how Bennufly delivers software.";
 
 export const Route = createFileRoute("/process")({
-  head: () => ({ meta: [{ title: T }, { name: "description", content: D }, { property: "og:title", content: T }, { property: "og:description", content: D }] }),
+  head: () => ({   meta: [     { title: T },     { name: "description", content: D },     { property: "og:title", content: T },     { property: "og:description", content: D },     {       property: "og:url",       content: "https://official.bennufly.in/process",     },   ],   links: [     {       rel: "canonical",       href: "https://official.bennufly.in/process",     },   ], }),
   component: Process,
 });
 
