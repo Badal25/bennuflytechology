@@ -13,10 +13,10 @@ export const Route = createFileRoute("/portfolio/$slug")({
       { property: "og:title", content: "Project — Bennufly Technology" },
       { property: "og:description", content: "Project details and technology stack from the Bennufly Technology portfolio." },
       { property: "og:type", content: "article" },
-      { property: "og:url", content: `/portfolio/${params.slug}` },
+      { property: "og:url", content: `https://official.bennufly.in/portfolio/${params.slug}` },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: `/portfolio/${params.slug}` }],
+    links: [{ rel: "canonical", href: `https://official.bennufly.in/portfolio/${params.slug}` }],
   }),
   component: ProjectDetail,
 });
