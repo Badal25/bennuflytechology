@@ -60,6 +60,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: "/admin/learning", label: "Learning & Internships", icon: GraduationCap, roles: ["super_admin", "hr", "content_manager"] },
 
   { to: "/admin/leads", label: "Leads", icon: BarChart3, roles: ["super_admin", "sales"] },
+  { to: "/admin/quotes", label: "Quote Requests", icon: MessageSquareQuote, roles: ["super_admin", "sales"] },
   { to: "/admin/blogs", label: "Blogs", icon: Newspaper, roles: ["super_admin", "content_manager"] },
   { to: "/admin/testimonials", label: "Testimonials", icon: MessageSquareQuote, roles: ["super_admin", "content_manager"] },
   { to: "/admin/faqs", label: "FAQs", icon: HelpCircle, roles: ["super_admin", "content_manager"] },
