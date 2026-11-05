@@ -25,7 +25,7 @@ export const Route = createFileRoute("/blog/$slug")({
   },
   head: ({ params, loaderData }) => {
     const post = loaderData?.post as any;
-    const url = `/blog/${params.slug}`;
+    const url = `https://official.bennufly.in/blog/${params.slug}`;
     if (!post) {
       return {
         meta: [
