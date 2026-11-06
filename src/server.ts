@@ -21,6 +21,7 @@ const SERVER_ENV_BINDINGS = [
   "OPENAI_MODEL",
   "ANTHROPIC_MODEL",
   "GOOGLE_MODEL",
+    "BREVO_API_KEY",
 ] as const;
 
 /**
