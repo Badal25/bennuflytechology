@@ -23,10 +23,10 @@ export const Route = createFileRoute("/contact")({
       { property: "og:title", content: T },
       { property: "og:description", content: D },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://official.bennufly.in/contact" },
+      { property: "og:url", content: "https://bennufly.in/contact" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [   {     rel: "canonical",     href: "https://official.bennufly.in/contact",   }, ],
+    links: [   {     rel: "canonical",     href: "https://bennufly.in/contact",   }, ],
   }),
   component: ContactPage,
 });
