@@ -7,7 +7,7 @@ const T = "Technologies We Use — Bennufly Technology";
 const D = "React, Next.js, Node.js, Python, Flutter, PostgreSQL, AWS, Docker, AI APIs and more — the stack behind Bennufly products.";
 
 export const Route = createFileRoute("/technologies")({
-  head: () => ({   meta: [     { title: T },     { name: "description", content: D },     { property: "og:title", content: T },     { property: "og:description", content: D },     {       property: "og:url",       content: "https://official.bennufly.in/technologies",     },   ],   links: [     {       rel: "canonical",       href: "https://official.bennufly.in/technologies",     },   ], }),
+  head: () => ({   meta: [     { title: T },     { name: "description", content: D },     { property: "og:title", content: T },     { property: "og:description", content: D },     {       property: "og:url",       content: "https://bennufly.in/technologies",     },   ],   links: [     {       rel: "canonical",       href: "https://bennufly.in/technologies",     },   ], }),
   component: Tech,
 });
 
