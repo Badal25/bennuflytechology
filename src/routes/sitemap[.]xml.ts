@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 
-const BASE_URL = "https://official.bennufly.in";
+const BASE_URL = "https://bennufly.in";
 
 interface SitemapEntry {
   path: string;
