@@ -18,6 +18,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { supabase } from "@/integrations/supabase/client";
 import { useResource } from "@/lib/admin";
+import { useServerFn } from "@tanstack/react-start";
+import { sendApplicationStatusEmail } from "@/lib/status-email.functions";
 import { useAuth } from "@/hooks/use-auth";
 import {
   INTERNSHIP_APPLICATION_STATUSES,
@@ -201,6 +203,21 @@ function InternshipApplications() {
     },
   });
 
+  const sendStatusEmail = useServerFn(sendApplicationStatusEmail);
+  const changeStatus = async (id: string, status: string) => {
+    try {
+      await update({ id, values: { status } });
+    } catch {
+      return;
+    }
+    try {
+      const r = await sendStatusEmail({ data: { kind: "internship", id } });
+      if (r.sent) toast.success(`Status saved · email sent to applicant`);
+      else toast.warning(`Status saved · email not sent: ${r.reason}`);
+    } catch {
+      toast.warning("Status saved · email could not be sent");
+    }
+  };
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [program, setProgram] = useState("all");
@@ -336,7 +353,7 @@ function InternshipApplications() {
                     {format(new Date(r.created_at), "d MMM yyyy")}
                   </TableCell>
                   <TableCell>
-                    <Select value={r.status} onValueChange={(v) => update({ id: r.id, values: { status: v } })}>
+                    <Select value={r.status} onValueChange={(v) => changeStatus(r.id, v)}>
                       <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         {INTERNSHIP_APPLICATION_STATUSES.map((s) => (
