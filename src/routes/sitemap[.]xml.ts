@@ -41,7 +41,7 @@ function escapeXml(value: string): string {
       "'": "&apos;",
       '"': "&quot;",
     };
-    return entities[char];
+    return entities[char] ?? char;
   });
 }
 
