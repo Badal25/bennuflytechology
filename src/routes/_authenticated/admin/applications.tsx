@@ -15,6 +15,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { supabase } from "@/integrations/supabase/client";
 import { useResource } from "@/lib/admin";
+import { useServerFn } from "@tanstack/react-start";
+import { sendApplicationStatusEmail } from "@/lib/status-email.functions";
 
 export const Route = createFileRoute("/_authenticated/admin/applications")({
   head: () => ({ meta: [{ name: "robots", content: "noindex" }] }),
@@ -36,6 +38,21 @@ function ApplicationsPage() {
       return data ?? [];
     },
   });
+  const sendStatusEmail = useServerFn(sendApplicationStatusEmail);
+  const changeStatus = async (id: string, status: string) => {
+    try {
+      await update({ id, values: { status } });
+    } catch {
+      return;
+    }
+    try {
+      const r = await sendStatusEmail({ data: { kind: "job", id } });
+      if (r.sent) toast.success(`Status saved · email sent to applicant`);
+      else toast.warning(`Status saved · email not sent: ${r.reason}`);
+    } catch {
+      toast.warning("Status saved · email could not be sent");
+    }
+  };
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [job, setJob] = useState("all");
@@ -151,7 +168,7 @@ function ApplicationsPage() {
                     <TableCell className="text-sm text-muted-foreground">{r.experience || "—"}</TableCell>
                     <TableCell className="text-sm text-muted-foreground">{format(new Date(r.created_at), "d MMM yyyy")}</TableCell>
                     <TableCell>
-                      <Select value={r.status} onValueChange={(v) => update({ id: r.id, values: { status: v } })}>
+                      <Select value={r.status} onValueChange={(v) => changeStatus(r.id, v)}>
                         <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
                         <SelectContent>
                           {STATUSES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
