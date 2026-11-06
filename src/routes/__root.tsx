@@ -157,7 +157,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     "@type": "WebSite",
     name: "Bennufly Technology",
     alternateName: ["Bennufly", "Bennufly Technologies"],
-    url: "https://official.bennufly.in/",
+    url: "https://bennufly.in/",
     inLanguage: "en",
   }),
 },
