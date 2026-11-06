@@ -29,13 +29,13 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: DESC },
       {
         property: "og:url",
-        content: "https://official.bennufly.in/",
+        content: "https://bennufly.in/",
       },
     ],
     links: [
       {
         rel: "canonical",
-        href: "https://official.bennufly.in/",
+        href: "https://bennufly.in/",
       },
     ],
   }),
