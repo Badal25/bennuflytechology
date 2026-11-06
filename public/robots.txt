@@ -15,3 +15,4 @@ Allow: /
 Disallow: /admin
 Disallow: /auth
 Disallow: /reset-password
+Sitemap: https://bennufly.in/sitemap.xml
