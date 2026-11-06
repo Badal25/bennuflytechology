@@ -16,13 +16,13 @@ export const Route = createFileRoute("/about")({
       { property: "og:description", content: D },
       {
         property: "og:url",
-        content: "https://official.bennufly.in/about",
+        content: "https://bennufly.in/about",
       },
     ],
     links: [
       {
         rel: "canonical",
-        href: "https://official.bennufly.in/about",
+        href: "https://bennufly.in/about",
       },
     ],
   }),
