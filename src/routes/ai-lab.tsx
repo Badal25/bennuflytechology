@@ -20,13 +20,13 @@ export const Route = createFileRoute("/ai-lab")({
       { property: "og:title", content: T },
       { property: "og:description", content: D },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://official.bennufly.in/ai-lab" },
+      { property: "og:url", content: "https://bennufly.in/ai-lab" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       {
         rel: "canonical",
-        href: "https://official.bennufly.in/ai-lab",
+        href: "https://bennufly.in/ai-lab",
       },
     ],
   }),
