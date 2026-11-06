@@ -8,6 +8,7 @@ import { Section, Reveal } from "@/components/site/primitives";
 import { Field, inputClass, SubmitButton, HoneypotField } from "@/components/site/form-controls";
 import { useSpamGuard } from "@/lib/spam-guard";
 import { supabase } from "@/integrations/supabase/client";
+import { sendContactEmails } from "@/lib/contact-email.functions";
 import { useSettings } from "@/lib/db";
 import { useServices } from "@/lib/db";
 import { BUDGETS, TIMELINES, whatsappHref } from "@/lib/site";
@@ -196,11 +197,21 @@ function ContactForm({ serviceOptions }: { serviceOptions: string[] }) {
       message: d.message,
       source: "contact",
     });
-    setBusy(false);
-    if (error) {
+       if (error) {
+      setBusy(false);
       toast.error("We could not send your message right now. Please try again.");
       return;
     }
+
+    // Send emails after the inquiry is successfully saved.
+    // Email failure will not affect the saved inquiry.
+    try {
+      await sendContactEmails({ data: d });
+    } catch (emailError) {
+      console.error("Contact form email notification failed:", emailError);
+    }
+
+    setBusy(false);
     setDone(true);
     guard.markSubmitted();
     toast.success("Thanks for reaching out. Our team will get back to you soon.");
