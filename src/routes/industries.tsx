@@ -7,7 +7,7 @@ const T = "Industries We Serve — Bennufly Technology";
 const D = "Startups, education, healthcare, finance, retail, real estate, manufacturing, logistics, travel and professional services.";
 
 export const Route = createFileRoute("/industries")({
-  head: () => ({   meta: [     { title: T },     { name: "description", content: D },     { property: "og:title", content: T },     { property: "og:description", content: D },     {       property: "og:url",       content: "https://official.bennufly.in/industries",     },   ],   links: [     {       rel: "canonical",       href: "https://official.bennufly.in/industries",     },   ], }),
+  head: () => ({   meta: [     { title: T },     { name: "description", content: D },     { property: "og:title", content: T },     { property: "og:description", content: D },     {       property: "og:url",       content: "https://bennufly.in/industries",     },   ],   links: [     {       rel: "canonical",       href: "https://bennufly.in/industries",     },   ], }),
   component: Industries,
 });
 
