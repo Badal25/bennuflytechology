@@ -16,7 +16,7 @@ export const Route = createFileRoute("/privacy")({
       { property: "og:url", content: "/privacy" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/privacy" }],
+    links: [{ rel: "canonical", href: "https://bennufly.in/privacy" }],
   }),
   component: PrivacyPage,
 });
