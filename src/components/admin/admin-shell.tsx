@@ -66,11 +66,10 @@ const NAV_ITEMS: NavItem[] = [
   { to: "/admin/faqs", label: "FAQs", icon: HelpCircle, roles: ["super_admin", "content_manager"] },
   { to: "/admin/team", label: "Team", icon: Users2, roles: ["super_admin", "content_manager"] },
   { to: "/admin/media", label: "Media", icon: Image, roles: ["super_admin", "content_manager", "developer"] },
-  { to: "/admin/newsletter", label: "Newsletter", icon: Mail, roles: ["super_admin", "sales"] },
+  { to: "/admin/newsletter", label: "Newsletter & Email", icon: Mail, roles: ["super_admin", "sales"] },
   { to: "/admin/seo", label: "SEO", icon: Search, roles: ["super_admin", "content_manager"] },
   { to: "/admin/users", label: "Users", icon: ShieldCheck, roles: ["super_admin"] },
   { to: "/admin/settings", label: "Settings", icon: Settings, roles: ["super_admin"] },
-    { to: "/admin/email", label: "Direct Mail", icon: Mail, roles: ["super_admin", "hr", "sales"] },
 
 ];
 
