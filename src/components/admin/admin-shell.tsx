@@ -70,6 +70,8 @@ const NAV_ITEMS: NavItem[] = [
   { to: "/admin/seo", label: "SEO", icon: Search, roles: ["super_admin", "content_manager"] },
   { to: "/admin/users", label: "Users", icon: ShieldCheck, roles: ["super_admin"] },
   { to: "/admin/settings", label: "Settings", icon: Settings, roles: ["super_admin"] },
+    { to: "/admin/email", label: "Direct Mail", icon: Mail, roles: ["super_admin", "hr", "sales"] },
+
 ];
 
 function useAllowedNav() {
