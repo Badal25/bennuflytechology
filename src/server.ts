@@ -27,6 +27,11 @@ const SERVER_ENV_BINDINGS = [
   "BREVO_API_KEY",
 ] as const;
 
+function exposeWorkerEnvironment(env: unknown): void {
+  (globalThis as typeof globalThis & {
+    __env__?: unknown;
+  }).__env__ = env;
+}
 /**
  * Copies Cloudflare Worker environment bindings into process.env
  * so server-side integrations can access them.
@@ -129,7 +134,8 @@ function isH3SwallowedErrorBody(body: string): boolean {
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
-      bindWorkerEnvironment(request, env);
+      exposeWorkerEnvironment(env);
+bindWorkerEnvironment(request, env);
 
       const handler = await getServerEntry();
 
