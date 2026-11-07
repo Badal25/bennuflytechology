@@ -135,6 +135,17 @@ export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
       exposeWorkerEnvironment(env);
+const runtimeEnv = env as Record<string, unknown>;
+
+console.log("[WORKER DIRECT ENV CHECK]", {
+  supabaseUrlPresent: typeof runtimeEnv?.SUPABASE_URL === "string",
+  supabaseKeyPresent:
+    typeof runtimeEnv?.SUPABASE_PUBLISHABLE_KEY === "string",
+  brevoKeyPresent:
+    typeof runtimeEnv?.BREVO_DIRECT_API_KEY === "string" ||
+    typeof runtimeEnv?.BREVO_API_KEY === "string",
+});
+      
 bindWorkerEnvironment(request, env);
 
       const handler = await getServerEntry();
