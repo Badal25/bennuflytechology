@@ -38,21 +38,43 @@ function ApplicationsPage() {
       return data ?? [];
     },
   });
-  const sendStatusEmail = useServerFn(sendApplicationStatusEmail);
-  const changeStatus = async (id: string, status: string) => {
-    try {
-      await update({ id, values: { status } });
-    } catch {
+const sendStatusEmail = useServerFn(sendApplicationStatusEmail);
+
+const changeStatus = async (id: string, status: string) => {
+  try {
+    await update({ id, values: { status } });
+  } catch (error) {
+    console.error("Application status update failed:", error);
+    return;
+  }
+
+  try {
+    const { data: sessionData, error: sessionError } =
+      await supabase.auth.getSession();
+
+    if (sessionError || !sessionData.session?.access_token) {
+      toast.warning("Status saved · Please sign in again to send email.");
       return;
     }
-    try {
-      const r = await sendStatusEmail({ data: { kind: "job", id } });
-      if (r.sent) toast.success(`Status saved · email sent to applicant`);
-      else toast.warning(`Status saved · email not sent: ${r.reason}`);
-    } catch {
-      toast.warning("Status saved · email could not be sent");
+
+    const r = await sendStatusEmail({
+      data: {
+        kind: "job",
+        id,
+        accessToken: sessionData.session.access_token,
+      },
+    });
+
+    if (r.sent) {
+      toast.success("Status saved · Email sent to applicant");
+    } else {
+      toast.warning(`Status saved · Email not sent: ${r.reason}`);
     }
-  };
+  } catch (error) {
+    console.error("Status email invocation failed:", error);
+    toast.warning("Status saved · Email sending failed. Check console logs.");
+  }
+};
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [job, setJob] = useState("all");
