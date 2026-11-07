@@ -65,9 +65,36 @@ export const sendApplicationStatusEmail = createServerFn({
   )
   .handler(async ({ data }) => {
     try {
-      const supabaseUrl = process.env["SUPABASE_URL"];
-      const supabaseKey = process.env["SUPABASE_PUBLISHABLE_KEY"];
-      const brevoKey = process.env["BREVO_API_KEY"];
+      const workerEnv = (
+  globalThis as typeof globalThis & {
+    __env__?: Record<string, unknown>;
+  }
+).__env__;
+
+const getEnv = (name: string): string | undefined => {
+  const workerValue = workerEnv?.[name];
+
+  if (typeof workerValue === "string" && workerValue.length > 0) {
+    return workerValue;
+  }
+
+  const processValue = process.env[name];
+
+  return typeof processValue === "string" && processValue.length > 0
+    ? processValue
+    : undefined;
+};
+
+const supabaseUrl = getEnv("SUPABASE_URL");
+const supabaseKey = getEnv("SUPABASE_PUBLISHABLE_KEY");
+const brevoKey =
+  getEnv("BREVO_API_KEY") ?? getEnv("BREVO_DIRECT_API_KEY");
+
+console.log("[STATUS EMAIL ENV CHECK]", {
+  supabaseUrlPresent: Boolean(supabaseUrl),
+  supabaseKeyPresent: Boolean(supabaseKey),
+  brevoKeyPresent: Boolean(brevoKey),
+});
 
       if (!supabaseUrl || !supabaseKey) {
         console.error("Status email: Supabase configuration missing.");
