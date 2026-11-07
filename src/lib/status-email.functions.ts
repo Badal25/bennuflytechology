@@ -1,4 +1,3 @@
-
 import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
@@ -18,37 +17,108 @@ const esc = (s: string) =>
     })[c]!,
   );
 
-const MESSAGES: Record<string, string> = {
-  NEW: "We have received your application and it is now under review.",
-  "Under Review": "Our team is currently reviewing your application.",
+type StatusEmailConfig = {
+  badgeBg: string;
+  badgeText: string;
+  borderAccent: string;
+  headline: string;
+  body: string;
+  note?: string;
+};
 
-  SHORTLISTED:
-    "Congratulations! You have been shortlisted. Our team will contact you soon with next steps.",
-  Shortlisted:
-    "Congratulations! You have been shortlisted. Our team will contact you soon with next steps.",
-
-  INTERVIEW:
-    "Your application has moved to the interview stage. Our team will contact you with the interview details.",
-  "Interview Scheduled":
-    "Your interview has been scheduled. Please watch your inbox and phone for details.",
-
-  SELECTED:
-    "Congratulations! You have been selected. Our team will reach out with onboarding details.",
-  Selected:
-    "Congratulations! You have been selected. Our team will reach out with onboarding details.",
-
-  ACTIVE: "Your internship is now active. Welcome to Bennufly Technology!",
-  Active: "Your internship is now active. Welcome to Bennufly Technology!",
-
-  COMPLETED:
-    "You have successfully completed your internship. Thank you for your hard work.",
-  Completed:
-    "You have successfully completed your internship. Thank you for your hard work.",
-
-  REJECTED:
-    "Thank you for your interest. After careful review, we will not be moving forward at this time. We encourage you to apply again in the future.",
-  Rejected:
-    "Thank you for your interest. After careful review, we will not be moving forward at this time. We encourage you to apply again in the future.",
+const STATUS_CONFIG: Record<string, StatusEmailConfig> = {
+  REJECTED: {
+    badgeBg: "#f1f5f9",
+    badgeText: "#475569",
+    borderAccent: "#94a3b8",
+    headline: "Update regarding your application",
+    body: "Thank you for taking the time to apply and share your journey with Bennufly Technology. After careful evaluation of all submissions, we have decided not to move forward with your application for this specific opening at this time.<br/><br/>Our hiring decisions are often tough due to high applicant volumes, and this is by no means a reflection of your potential. We have retained your resume in our talent network and will gladly reach out if a future opportunity aligns with your expertise.",
+    note: "We sincerely appreciate your effort and wish you immense success in your professional journey.",
+  },
+  Rejected: {
+    badgeBg: "#f1f5f9",
+    badgeText: "#475569",
+    borderAccent: "#94a3b8",
+    headline: "Update regarding your application",
+    body: "Thank you for taking the time to apply and share your journey with Bennufly Technology. After careful evaluation of all submissions, we have decided not to move forward with your application for this specific opening at this time.<br/><br/>Our hiring decisions are often tough due to high applicant volumes, and this is by no means a reflection of your potential. We have retained your resume in our talent network and will gladly reach out if a future opportunity aligns with your expertise.",
+    note: "We sincerely appreciate your effort and wish you immense success in your professional journey.",
+  },
+  SHORTLISTED: {
+    badgeBg: "#eef2ff",
+    badgeText: "#4338ca",
+    borderAccent: "#6366f1",
+    headline: "Great news! Your profile is shortlisted",
+    body: "Congratulations! We were thoroughly impressed with your profile and qualifications, and have shortlisted your application. Our talent acquisition team is preparing the next round and will get in touch with you shortly.",
+    note: "Please keep an eye on your inbox and phone for upcoming scheduling details.",
+  },
+  Shortlisted: {
+    badgeBg: "#eef2ff",
+    badgeText: "#4338ca",
+    borderAccent: "#6366f1",
+    headline: "Great news! Your profile is shortlisted",
+    body: "Congratulations! We were thoroughly impressed with your profile and qualifications, and have shortlisted your application. Our talent acquisition team is preparing the next round and will get in touch with you shortly.",
+    note: "Please keep an eye on your inbox and phone for upcoming scheduling details.",
+  },
+  INTERVIEW: {
+    badgeBg: "#fef3c7",
+    badgeText: "#92400e",
+    borderAccent: "#f59e0b",
+    headline: "Interview stage has commenced",
+    body: "Your application has successfully advanced to the interview stage. Our recruitment team will share your calendar invite, meeting details, and interview format with you very soon.",
+    note: "Please ensure a quiet environment and stable internet connectivity for your session.",
+  },
+  "Interview Scheduled": {
+    badgeBg: "#fef3c7",
+    badgeText: "#92400e",
+    borderAccent: "#f59e0b",
+    headline: "Interview stage has commenced",
+    body: "Your application has successfully advanced to the interview stage. Our recruitment team will share your calendar invite, meeting details, and interview format with you very soon.",
+    note: "Please ensure a quiet environment and stable internet connectivity for your session.",
+  },
+  SELECTED: {
+    badgeBg: "#ecfdf5",
+    badgeText: "#065f46",
+    borderAccent: "#10b981",
+    headline: "Congratulations! You have been selected",
+    body: "We are thrilled to offer you a position at Bennufly Technology! Your skills, passion, and vision truly stood out during our selection process. Welcome to our team!",
+    note: "Our HR department will contact you shortly with your formal offer letter and onboarding schedule.",
+  },
+  Selected: {
+    badgeBg: "#ecfdf5",
+    badgeText: "#065f46",
+    borderAccent: "#10b981",
+    headline: "Congratulations! You have been selected",
+    body: "We are thrilled to offer you a position at Bennufly Technology! Your skills, passion, and vision truly stood out during our selection process. Welcome to our team!",
+    note: "Our HR department will contact you shortly with your formal offer letter and onboarding schedule.",
+  },
+  ACTIVE: {
+    badgeBg: "#ecfdf5",
+    badgeText: "#065f46",
+    borderAccent: "#10b981",
+    headline: "Your position is now active",
+    body: "Welcome aboard! Your tenure with Bennufly Technology is now officially active. We are excited to collaborate and build impactful solutions together.",
+  },
+  Active: {
+    badgeBg: "#ecfdf5",
+    badgeText: "#065f46",
+    borderAccent: "#10b981",
+    headline: "Your position is now active",
+    body: "Welcome aboard! Your tenure with Bennufly Technology is now officially active. We are excited to collaborate and build impactful solutions together.",
+  },
+  COMPLETED: {
+    badgeBg: "#f0fdf4",
+    badgeText: "#15803d",
+    borderAccent: "#22c55e",
+    headline: "Internship successfully completed",
+    body: "Congratulations on successfully completing your internship at Bennufly Technology! We deeply appreciate your hard work, curiosity, and contributions during your tenure with us.",
+  },
+  Completed: {
+    badgeBg: "#f0fdf4",
+    badgeText: "#15803d",
+    borderAccent: "#22c55e",
+    headline: "Internship successfully completed",
+    body: "Congratulations on successfully completing your internship at Bennufly Technology! We deeply appreciate your hard work, curiosity, and contributions during your tenure with us.",
+  },
 };
 
 export const sendApplicationStatusEmail = createServerFn({
@@ -66,35 +136,27 @@ export const sendApplicationStatusEmail = createServerFn({
   .handler(async ({ data }) => {
     try {
       const workerEnv = (
-  globalThis as typeof globalThis & {
-    __env__?: Record<string, unknown>;
-  }
-).__env__;
+        globalThis as typeof globalThis & {
+          __env__?: Record<string, unknown>;
+        }
+      ).__env__;
 
-const getEnv = (name: string): string | undefined => {
-  const workerValue = workerEnv?.[name];
+      const getEnv = (name: string): string | undefined => {
+        const workerValue = workerEnv?.[name];
+        if (typeof workerValue === "string" && workerValue.length > 0) {
+          return workerValue;
+        }
 
-  if (typeof workerValue === "string" && workerValue.length > 0) {
-    return workerValue;
-  }
+        const processValue = process.env[name];
+        return typeof processValue === "string" && processValue.length > 0
+          ? processValue
+          : undefined;
+      };
 
-  const processValue = process.env[name];
-
-  return typeof processValue === "string" && processValue.length > 0
-    ? processValue
-    : undefined;
-};
-
-const supabaseUrl = getEnv("SUPABASE_URL");
-const supabaseKey = getEnv("SUPABASE_PUBLISHABLE_KEY");
-const brevoKey =
-  getEnv("BREVO_API_KEY") ?? getEnv("BREVO_DIRECT_API_KEY");
-
-console.log("[STATUS EMAIL ENV CHECK]", {
-  supabaseUrlPresent: Boolean(supabaseUrl),
-  supabaseKeyPresent: Boolean(supabaseKey),
-  brevoKeyPresent: Boolean(brevoKey),
-});
+      const supabaseUrl = getEnv("SUPABASE_URL");
+      const supabaseKey = getEnv("SUPABASE_PUBLISHABLE_KEY");
+      const brevoKey =
+        getEnv("BREVO_API_KEY") ?? getEnv("BREVO_DIRECT_API_KEY");
 
       if (!supabaseUrl || !supabaseKey) {
         console.error("Status email: Supabase configuration missing.");
@@ -118,7 +180,6 @@ console.log("[STATUS EMAIL ENV CHECK]", {
         },
       });
 
-      // Validate the current admin's Supabase session.
       const { data: claimsData, error: claimsError } =
         await supabase.auth.getClaims(data.accessToken);
 
@@ -132,7 +193,6 @@ console.log("[STATUS EMAIL ENV CHECK]", {
         };
       }
 
-      // Only authorized staff can trigger application status emails.
       const roles = ["super_admin", "hr", "developer"];
       let authorized = false;
 
@@ -188,63 +248,121 @@ console.log("[STATUS EMAIL ENV CHECK]", {
 
       const what =
         data.kind === "internship"
-          ? row.program_name || "Internship"
-          : row.position || "Job application";
+          ? row.program_name || "Internship Program"
+          : row.position || "Job Application";
 
-      const message =
-        MESSAGES[status] ??
-        "Your application status has been updated by our team.";
+      const config = STATUS_CONFIG[status] ?? {
+        badgeBg: "#f8fafc",
+        badgeText: "#1e293b",
+        borderAccent: "#64748b",
+        headline: "Application status updated",
+        body: "Your application status has been updated by our recruitment team.",
+      };
 
       const sender = "careers@bennufly.in";
 
       const html = `
-        <div style="font-family:Arial,sans-serif;background:#ffffff;padding:24px;color:#111">
-          <div style="max-width:560px;margin:0 auto;border:1px solid #e5e7eb;border-radius:12px;padding:28px">
-            <h2 style="margin:0 0 4px">Bennufly Technology</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bennufly Technology Application Update</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#1e293b;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#f8fafc;padding:32px 16px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" style="max-width:580px;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,0.06);border:1px solid #e2e8f0;">
+          
+          <!-- Brand Header -->
+          <tr>
+            <td style="padding:28px 36px;background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);">
+              <h1 style="margin:0;font-size:22px;font-weight:700;letter-spacing:-0.4px;color:#ffffff;">
+                Bennufly Technology
+              </h1>
+              <p style="margin:4px 0 0;font-size:13px;color:#94a3b8;letter-spacing:0.2px;">
+                Talent & Recruitment Department
+              </p>
+            </td>
+          </tr>
 
-            <p style="color:#6b7280;margin:0 0 20px;font-size:13px">
-              Application status update
-            </p>
+          <!-- Email Content -->
+          <tr>
+            <td style="padding:36px;">
+              <p style="margin:0 0 16px;font-size:16px;color:#334155;">
+                Dear <strong>${esc(row.full_name || "Applicant")}</strong>,
+              </p>
 
-            <p>Hi ${esc(row.full_name || "there")},</p>
+              <h2 style="margin:0 0 10px;font-size:18px;font-weight:600;color:#0f172a;">
+                ${config.headline}
+              </h2>
 
-            <p>
-              The status of your application for
-              <b>${esc(what)}</b> has been updated to:
-            </p>
+              <p style="margin:0 0 24px;font-size:14px;color:#64748b;line-height:1.6;">
+                Regarding your application for <strong>${esc(what)}</strong>
+                ${ref ? ` <span style="color:#94a3b8;">(ID: ${esc(ref)})</span>` : ""}.
+              </p>
 
-            <p style="font-size:20px;font-weight:bold;background:#f3f4f6;border-radius:8px;padding:12px 16px;display:inline-block">
-              ${esc(status)}
-            </p>
+              <!-- Dynamic Status Pill -->
+              <div style="background:${config.badgeBg};border-left:4px solid ${config.borderAccent};border-radius:8px;padding:16px 20px;margin:0 0 24px;">
+                <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:${config.badgeText};margin-bottom:4px;">
+                  Current Status
+                </div>
+                <div style="font-size:20px;font-weight:700;color:${config.badgeText};">
+                  ${esc(status)}
+                </div>
+              </div>
 
-            <p>${esc(message)}</p>
+              <!-- Message Body -->
+              <div style="font-size:15px;line-height:1.7;color:#334155;margin:0 0 24px;">
+                ${config.body}
+              </div>
 
-            ${
-              ref
-                ? `<p>Your application ID: <b>${esc(ref)}</b></p>`
-                : ""
-            }
+              ${
+                config.note
+                  ? `
+              <div style="background:#f8fafc;border-radius:8px;padding:14px 18px;margin:0 0 28px;border:1px dashed #cbd5e1;font-size:13px;color:#475569;line-height:1.5;">
+                💡 <strong>Note:</strong> ${config.note}
+              </div>
+              `
+                  : ""
+              }
 
-            <p>
-              <a href="${SITE_URL}/verify"
-                style="display:inline-block;background:#111;color:#fff;text-decoration:none;padding:12px 20px;border-radius:8px">
-                Track your application
-              </a>
-            </p>
+              <!-- Portal Track Button -->
+              <div style="text-align:center;margin:32px 0 20px;">
+                <a href="${SITE_URL}/verify" style="display:inline-block;background:#0f172a;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:10px;font-weight:600;font-size:14px;letter-spacing:0.2px;">
+                  Track Application on Portal →
+                </a>
+              </div>
 
-            <p style="font-size:13px;color:#6b7280">
-              On the tracking page, enter your application ID and this email address.
-            </p>
+              <p style="margin:0;font-size:12px;color:#94a3b8;text-align:center;">
+                You can track updates anytime using Application ID <strong>${esc(ref || "N/A")}</strong> and your registered email.
+              </p>
+            </td>
+          </tr>
 
-            <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0"/>
+          <!-- Footer -->
+          <tr>
+            <td style="padding:22px 36px;background-color:#f8fafc;border-top:1px solid #f1f5f9;text-align:center;">
+              <p style="margin:0 0 4px;font-size:12px;font-weight:600;color:#475569;">
+                Bennufly Technology Pvt. Ltd.
+              </p>
+              <p style="margin:0 0 10px;font-size:12px;color:#94a3b8;">
+                Empowering Digital Innovation · India
+              </p>
+              <p style="margin:0;font-size:11px;color:#94a3b8;">
+                Need help? Contact <a href="mailto:careers@bennufly.in" style="color:#2563eb;text-decoration:none;">careers@bennufly.in</a>
+              </p>
+            </td>
+          </tr>
 
-            <p style="font-size:12px;color:#6b7280">
-              Bennufly Technology, India.<br/>
-              Questions? Contact careers@bennufly.in
-            </p>
-          </div>
-        </div>
-      `;
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
 
       const response = await fetch(BREVO_URL, {
         method: "POST",
@@ -268,17 +386,14 @@ console.log("[STATUS EMAIL ENV CHECK]", {
               name: row.full_name || "Applicant",
             },
           ],
-          subject: `Application update: ${status}${ref ? ` (${ref})` : ""}`,
+          subject: `Application Update: ${status}${ref ? ` (${ref})` : ""} | Bennufly Technology`,
           htmlContent: html,
         }),
       });
 
       if (!response.ok) {
         const errorBody = await response.text();
-
-        console.error(
-          `Brevo email failed [${response.status}]: ${errorBody}`,
-        );
+        console.error(`Brevo email failed [${response.status}]: ${errorBody}`);
 
         return {
           sent: false,
